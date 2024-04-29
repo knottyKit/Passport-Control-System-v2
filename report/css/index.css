@@ -1,0 +1,65 @@
+
+table {
+  border-collapse:separate !important;
+  border-spacing: 0;
+  width: 100%;
+}
+table thead tr th, table tbody tr td{
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #cbcbcb ;
+  white-space: nowrap;
+}
+table thead tr th:last-of-type{
+  width: 8%;
+}
+table thead tr th{
+  background-color: inherit;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-weight: 700;
+  padding: 1.25rem .75rem;
+}
+.main .tables thead tr th:first-of-type{
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+.main .tables thead tr th:last-of-type{
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+table thead tr {
+  background-color: var(--tableheader);
+}
+
+thead{
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+}
+.selection{
+  justify-content: space-between;
+}
+table tbody tr td{
+  background-color: #fff !important;
+}
+
+
+@media (max-width: 946px){
+  .selection{
+    flex-direction: column;
+    gap: 18px;
+  }
+  .selection > div{
+    width: 100%;
+  }
+  .btn-export{
+    width: 100%;
+  }
+  .form-floating{
+    width: 50% !important;
+  }
+
+}

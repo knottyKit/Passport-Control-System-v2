@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Passport Control System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <script src="js/html2canvas.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.inview.min.js"></script>
+    <!-- <script src="js/jquery.table2excel.js"></script> -->
+    <script>
+      var busterCall = ["js/individual.js", "css/index.css"];
+      $.post(
+        "php/get_version.php",
+        {
+          busterCall: busterCall,
+          titleName: "Passport Control System",
+        },
+        function (data) {
+          $("head").html(data);
+        }
+      );
+    </script>
+  </head>
+
+  <!-- #region modal -->
+  <div
+    class="modal fade"
+    id="addUserModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0">
+        <div class="modal-header border-0">
+          <h1 class="modal-title">Add New User</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="empId" class="form-label">Employee number</label>
+            <input
+              type="number"
+              class="input"
+              id="empId"
+              placeholder="eg. 012345"
+            />
+            <small class="hidden text-[var(--red-color)]"
+              >Please input an employee number.</small
+            >
+          </div>
+          <div class="mb-3 flex gap-2">
+            <div class="w-full">
+              <label for="empFName" class="form-label">First name</label>
+              <input
+                type="text"
+                class="input"
+                id="empFName"
+                placeholder="eg. Juan"
+              />
+              <small class="hidden text-[var(--red-color)]"
+                >Please input a first name.</small
+              >
+            </div>
+            <div class="w-full">
+              <label for="empLName" class="form-label">Surname</label>
+              <input
+                type="text"
+                class="input"
+                id="empLName"
+                placeholder="eg. Delacruz"
+              />
+              <small class="hidden text-[var(--red-color)]"
+                >Please input a surname.</small
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="empGroup" class="form-label">Group</label>
+            <select name="empGroup" id="empGroup" class="select">
+              <option>SYS</option>
+              <option>IT</option>
+            </select>
+            <small class="hidden text-[var(--red-color)]"
+              >Please select a group.</small
+            >
+          </div>
+          <div class="mb-3">
+            <label for="empAccess" class="form-label">Access type</label>
+            <select name="empAccess" id="empAccess" class="select">
+              <option>Group Admin</option>
+              <option>Admin</option>
+            </select>
+            <small class="hidden text-[var(--red-color)]"
+              >Please add an access type for this employee.</small
+            >
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button
+            type="button"
+            class="btn btn-secondary close"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="button bg-[var(--secondary)] hover:bg-[var(--tertiary)]"
+            id="addUser"
+          >
+            Add user
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="editUserModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0">
+        <div class="modal-header border-0">
+          <h1 class="modal-title">Edit User</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="empIdEdit" class="form-label">Employee number</label>
+            <input
+              type="number"
+              class="input"
+              id="empIdEdit"
+              placeholder="eg. 012345"
+              disabled
+            />
+          </div>
+          <div class="mb-3 flex gap-2">
+            <div class="w-full">
+              <label for="empFNameEdit" class="form-label">First name</label>
+              <input
+                type="text"
+                class="input"
+                id="empFNameEdit"
+                placeholder="eg. Juan"
+                disabled
+              />
+            </div>
+            <div class="w-full">
+              <label for="empLNameEdit" class="form-label">Surname</label>
+              <input
+                type="text"
+                class="input"
+                id="empLNameEdit"
+                placeholder="eg. Delacruz"
+                disabled
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="empGroup" class="form-label">Group</label>
+            <select name="empGroup" id="empGroup" class="select">
+              <option>SYS</option>
+              <option>IT</option>
+            </select>
+            <small class="hidden text-[var(--red-color)]"
+              >Please select a group.</small
+            >
+          </div>
+          <div class="mb-3">
+            <label for="empAccess" class="form-label">Access type</label>
+            <select name="empAccess" id="empAccess" class="select">
+              <option>Group Admin</option>
+              <option>Admin</option>
+            </select>
+            <small class="hidden text-[var(--red-color)]"
+              >Please add an access type for this employee.</small
+            >
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button
+            type="button"
+            class="button bg-[var(--secondary)] hover:bg-[var(--tertiary)]"
+            id="addUser"
+          >
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="removeUserModal"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0">
+        <div class="modal-header border-0">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center text-[16px] px-3">
+            Are you sure you want to remove user
+            <span
+              id="removeId"
+              class="text-[var(--red-color)] font-semibold text-[16px]"
+              >000</span
+            >
+            -
+            <span
+              id="removeName"
+              class="text-[var(--red-color)] font-semibold text-[16px]"
+              >Juan Delacruz</span
+            >?
+          </p>
+        </div>
+        <div class="modal-footer border-0">
+          <button
+            type="button"
+            class="button text-white bg-[var(--red-color)] hover:bg-red-700"
+            id="removeUser"
+          >
+            Remove user
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- #endregion modal-->
+
+  <body>
+    <div class="position-relative flex h-screen">
+      <div class="navigation">
+        <div
+          class="title p-3 d-flex justify-content-between align-items-center"
+        >
+          <h5 class="font-black text-center text-[28px] px-[.75rem]">
+            TRAVE<span class="text-[var(--secondary)] font-black text-[28px]"
+              >RU</span
+            >.
+          </h5>
+          <div
+            id="closeNav"
+            class="justify-content-center align-items-center m-0"
+          >
+            <i class="bx bx-x fs-3"></i>
+          </div>
+        </div>
+        <nav class="flex flex-col justify-content-between h-[calc(100%-63px)]">
+          <section>
+            <ul class="list-unstyled d-grid gap-2">
+              <a href="../"
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bxs-dashboard"></i>
+                    <p>Dashboard</p>
+                  </div>
+                </li></a
+              >
+              <a href="../checkAvailability/"
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bxs-briefcase"></i>
+                    <p>Manage Dispatch</p>
+                  </div>
+                </li></a
+              >
+              <a href="../empList/"
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bxs-group"></i>
+                    <p>Employee List</p>
+                  </div>
+                </li></a
+              >
+              <a href="../report/"
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bxs-report"></i>
+                    <p>Report</p>
+                  </div>
+                </li></a
+              >
+            </ul>
+          </section>
+          <section class="grid gap-2">
+            <li class="bg-[var(--main)] hover:bg-green-100">
+              <div class="flex gap-2 items-center">
+                <div
+                  class="bg-[var(--secondary)] rounded-full h-[45px] w-[45px] min-w-[45px] flex justify-content-center items-center"
+                >
+                  JC
+                </div>
+                <div class="w-full">
+                  <div class="">Joshua Mari Coquia</div>
+                  <div
+                    class="text-uppercase text-[10px] font-semibold text-gray-500"
+                  >
+                    System group
+                  </div>
+                </div>
+              </div>
+            </li>
+            <a href="./"
+              ><li class="active">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bxs-buildings"></i>
+                  <p>Organization</p>
+                </div>
+              </li></a
+            >
+            <a href="#"
+              ><li>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bx-log-out"></i>
+                  <p>Logout</p>
+                </div>
+              </li></a
+            >
+          </section>
+        </nav>
+      </div>
+      <div class="content h-screen">
+        <div class="main flex h-full">
+          <div
+            class="flex flex-col gap-3 overflow-auto p-[14px] md:p-8 h-full w-full"
+          >
+            <div class="pageTitle w-100 gap-3 d-flex">
+              <div id="menu">
+                <i class="bx bx-menu-alt-left fs-3"></i>
+              </div>
+              <h1 class="fw-semibold m-0">Organization</h1>
+            </div>
+
+            <div class="tables h-full position-relative overflow-hidden">
+              <div class="filters d-flex gap-3 mb-3">
+                <div class="search position-relative w-100">
+                  <input
+                    type="search"
+                    class="input"
+                    placeholder="Search Employee Name or Number"
+                    id="empSearch"
+                  />
+                  <i class="bx bx-search fs-5 position-absolute p-2"></i>
+                </div>
+                <div class="group">
+                  <select class="select" id="grpSel">
+                    <option value="">Select Group</option>
+                    <option value="">Systems</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  class="button bg-[var(--secondary)] hover:bg-[var(--tertiary)] flex items-center gap-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addUserModal"
+                >
+                  <i class="bx bx-plus font-bold"></i>
+                  Add new user
+                </button>
+              </div>
+
+              <div class="table-cont overflow-auto pb-3">
+                <table class="table">
+                  <thead class="sticky-top">
+                    <tr>
+                      <th>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="text-[12px] font-bold">Emp ID</span
+                          ><i
+                            class="bx bx-sort-alt-2 fs-5 sortEmpNum"
+                            role="button"
+                          ></i>
+                        </div>
+                      </th>
+                      <th>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="text-[12px] font-bold">Name</span
+                          ><i
+                            class="bx bx-sort-a-z fs-5 sortEmpName"
+                            role="button"
+                          ></i>
+                        </div>
+                      </th>
+                      <th>Group</th>
+                      <th>Access Type</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="eList"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div
+        class="position-fixed help shadow"
+        data-bs-target="#carouselModal"
+        data-bs-toggle="modal"
+      >
+        <i class="bx bx-question-mark text-white"></i>
+      </div> -->
+      </div>
+    </div>
+  </body>
+</html>
