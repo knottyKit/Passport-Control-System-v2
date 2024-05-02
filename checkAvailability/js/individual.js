@@ -14,29 +14,17 @@ var dispatch_days = 0;
 var to_add = 0;
 const full = 183;
 var dHistory = [];
-var editAccess = false;
 //#endregion
 checkAccess()
   .then((acc) => {
     if (acc) {
       $(document).ready(function () {
         getYears();
-        Promise.all([
-          getGroups(),
-          getEmployees(),
-          getLocations(),
-          checkEditAccess(),
-        ])
-          .then(([grps, emps, locs, eAccess]) => {
+        Promise.all([getGroups(), getEmployees(), getLocations()])
+          .then(([grps, emps, locs]) => {
             fillGroups(grps);
             fillEmployees(emps);
             fillLocations(locs);
-            editAccess = eAccess;
-            if (eAccess === false) {
-              $("#btnApply").remove();
-              $("#btnClear").remove();
-              $("#updateEmp").remove();
-            }
           })
           .catch((error) => {
             alert(`${error}`);
@@ -280,16 +268,6 @@ function countDays(strt, end) {
       },
     });
   });
-
-  var timeDifference = endDate - startDate;
-  var daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)) + 1;
-
-  if (daysDifference === 1) {
-    $("#daysCount").text(" 1 day.");
-  } else {
-    $("#daysCount").text(`${daysDifference} days`);
-  }
-  countTotal();
 }
 function displayDays(cdays) {
   if (cdays.difference === 1) {
@@ -476,8 +454,8 @@ function fillHistory(dlist) {
       row.append(
         `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.pastOne}</td>`
       );
-      if (editAccess === true) {
-        row.append(`<td data-exclude='true'>
+
+      row.append(`<td data-exclude='true'>
         <div class="d-flex gap-2">
         <button
           class="btn-edit"
@@ -495,7 +473,6 @@ function fillHistory(dlist) {
           <i class="bx bx-trash fs-5"></i>
         </button>
       </div></td>`);
-      }
 
       tableBody.append(row);
     });
@@ -722,50 +699,11 @@ function checkAccess() {
   });
 }
 
-function checkEditAccess() {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "GET",
-      url: "php/check_edit_permission.php",
-      dataType: "json",
-      success: function (data) {
-        const acc = data;
-        resolve(acc);
-      },
-      error: function (xhr, status, error) {
-        if (xhr.status === 404) {
-          reject("Not Found Error: The requested resource was not found.");
-        } else if (xhr.status === 500) {
-          reject("Internal Server Error: There was a server error.");
-        } else {
-          reject("An unspecified error occurred.1");
-        }
-      },
-    });
-  });
-}
-
 function saveEditEntry() {
   var loc = $("#editentryLocation").val();
   var dateJapan = $("#editentryDateJ").val();
   var datePh = $("#editentryDateP").val();
   const empID = $("#empSel").find("option:selected").attr("emp-id");
-  // var fd = new FormData();
-  // fd.append("location", loc);
-  // fd.append("dateJapan", dateJapan);
-  // fd.append("datePh", datePh);
-
-  // $.ajax({
-  //   type: "POST",
-  //   url: "",
-  //   data: fd,
-  //   contentType: false,
-  //   cache: false,
-  //   processData: false,
-  //   success: function (response) {
-  //     $("#btn-saveEntry").closest(".modal").find(".btn-close").click();
-  //   },
-  // });
   const editID = $("#btn-saveEntry").attr("e-id");
   $.ajax({
     type: "POST",
