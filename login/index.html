@@ -63,10 +63,16 @@
   <!-- #endregion modal-->
 
   <body>
-    <div class="position-relative flex h-screen">
-      <div class="w-full h-full flex items-center justify-center">
+    <div class="relative flex h-screen overflow-hidden">
+      <div
+        id="animationContainer"
+        class="absolute top-[250px] left-0 w-full h-full z-0 lg:scale-[1] scale-[2]"
+      ></div>
+      <div class="w-full h-full flex items-center justify-center z-1">
         <!-- bg-gradient-to-r from-emerald-500 from-10% to-green-400 to-90% -->
-        <div class="w-[450px] flex flex-col p-9 py-[60px] gap-9 bg-white">
+        <div
+          class="w-[450px] backdrop-blur-sm bg-white/30 flex flex-col p-9 py-[60px] gap-9"
+        >
           <div>
             <h5 class="text-[32px]">Welcome to</h5>
             <h1 class="font-black text-[60px]">

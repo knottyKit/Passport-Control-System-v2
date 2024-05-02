@@ -28,6 +28,7 @@ checkAccess()
           .catch((error) => {
             alert(`${error}`);
           });
+        animation();
       });
     } else {
       alert("Access denied");
@@ -225,4 +226,29 @@ function checkAccess() {
     });
   });
 }
+
+function animation() {
+  var animation = bodymovin.loadAnimation({
+    container: document.getElementById("animationContainer"),
+    renderer: "svg", // Choose the renderer (svg, canvas, html)
+    loop: true, // Whether the animation should loop
+    autoplay: true, // Whether the animation should start automatically
+    path: "../animation.json", // Path to your animation JSON file
+    speed: 1, // Adjust animation speed (1 for normal speed)
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid meet", // Set how the animation fits inside the container
+    },
+  });
+
+  // Add a delay after each loop completes
+  animation.addEventListener("loopComplete", function () {
+    setTimeout(function () {
+      animation.pause(); // Pause the animation
+      setTimeout(function () {
+        animation.play(); // Resume the animation after the delay
+      }, 3000); // 3-second delay (3000 milliseconds)
+    }, 0); // No delay to pause immediately
+  });
+}
+
 //#endregion
