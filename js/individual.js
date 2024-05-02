@@ -58,10 +58,6 @@ $(document).on("click", "#closeNav", function () {
   $(".navigation").removeClass("open");
   $("body").removeClass("overflow-hidden");
 });
-$(document).on("click", ".rowEmp", function () {
-  var empID = $(this).attr("emp-id");
-  window.location.href = `./empDetails?id=${empID}`;
-});
 //#endregion
 
 //#region FUNCTIONS
