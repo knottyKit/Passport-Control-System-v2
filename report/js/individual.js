@@ -52,22 +52,28 @@ $(document).on("click", "#closeNav", function () {
 });
 
 $(document).on("change", "#grpSel", function () {
+  toggleLoadingAnimation(true);
   getReport()
     .then((rep) => {
       createTable(rep);
+      toggleLoadingAnimation(false);
     })
     .catch((error) => {
       alert(`${error}`);
+      toggleLoadingAnimation(false);
     });
 });
 $(document).on("change", "#yearSel", function () {
+  toggleLoadingAnimation(true);
   $("#selectedYear").text($(this).val());
   getReport()
     .then((rep) => {
       createTable(rep);
+      toggleLoadingAnimation(false);
     })
     .catch((error) => {
       alert(`${error}`);
+      toggleLoadingAnimation(false);
     });
 });
 $(document).on("click", "#btnExport", function () {
@@ -269,5 +275,28 @@ function exportTable() {
       name: `${yr}`,
     },
   });
+}
+function toggleLoadingAnimation(show) {
+  if (show) {
+    $("#appendHere").append(`
+          <div class="top-0 backdrop-blur-sm bg-gray/30 h-full flex justify-center items-center flex-col pb-5 absolute w-full" id="loadingAnimation">
+              <div class="relative">
+                  <div class="grayscale-[70%] w-[400px]">
+                      <img src="../images/Frame 1.gif" alt="loader" class="w-full" />
+                  </div>
+                  <div class="absolute bottom-0 flex-col w-full text-center flex justify-center items-center gap-2">
+                      <div class="title fw-semibold fs-5">
+                          Loading data . . .
+                      </div>
+                      <div class="text">
+                          Please wait while we fetch the dispatch report details.
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `);
+  } else {
+    $("#loadingAnimation").remove();
+  }
 }
 //#endregion
