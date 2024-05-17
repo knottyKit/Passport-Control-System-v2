@@ -1,4 +1,6 @@
-
+ td, tbody tr{
+  background-color: #fff ;
+}
 table {
   border-collapse:separate !important;
   border-spacing: 0;
@@ -22,16 +24,12 @@ table thead tr th{
   font-weight: 700;
   padding: 1.25rem .75rem;
 }
-.main .tables thead tr th:first-of-type{
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-.main .tables thead tr th:last-of-type{
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
+
 table thead tr {
   background-color: var(--tableheader);
+}
+table tbody tr:hover td{
+  background-color: rgba(0, 0, 0,  0.075);
 }
 
 thead{
@@ -42,9 +40,7 @@ thead{
 .selection{
   justify-content: space-between;
 }
-table tbody tr td{
-  background-color: #fff !important;
-}
+
 
 
 @media (max-width: 946px){
