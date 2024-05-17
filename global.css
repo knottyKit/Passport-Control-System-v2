@@ -139,6 +139,8 @@ nav li.active {
   white-space: nowrap;
 }
 
+
+/* TOAST ITO */
 .toastBox{
   height: calc(100% - 30px);
   width: 300px;
@@ -226,7 +228,7 @@ pointer-events: none;
     transform: translateX(0);
   }
 }
-
+/* END TOAST ITO */
 
 @media (max-width: 886px) {
   .pageTitle {

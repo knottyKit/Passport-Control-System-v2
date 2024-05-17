@@ -184,6 +184,10 @@ $(document).on(
     $(".errTxt").remove();
   }
 );
+$(document).on("change", "#startDate", function () {
+  const sdate = $(this).val();
+  $("#endDate").attr("min", sdate);
+});
 //#endregion
 
 //#region FUNCTIONS
@@ -615,6 +619,7 @@ function insertDispatch() {
       const isSuccess = response.isSuccess;
       if (!isSuccess) {
         toggleLoadingAnimation(false);
+        showToast("error", `${response.error}`);
         alert(`${response.error}`); // Reject the promise
       } else {
         Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
@@ -977,4 +982,6 @@ function showToast(type, str) {
     toast.remove();
   }, 3000);
 }
+
+
 //#endregion
