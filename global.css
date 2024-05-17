@@ -83,8 +83,8 @@ nav li:hover {
   background-color: var(--main);
 }
 nav li.active {
-  background-color: var(--secondary);
-}
+  background-color: var(--secondary);  
+}  
 .pageTitle h1 {
   font-size: 24px;
   font-weight: 600;
@@ -139,6 +139,95 @@ nav li.active {
   white-space: nowrap;
 }
 
+.toastBox{
+  height: calc(100% - 30px);
+  width: 300px;
+
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px;
+  z-index: 10;
+    gap: 16px;
+pointer-events: none;
+
+}
+
+.toasty{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255,.6);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  overflow: hidden;
+  transform: translateX(100%);
+  pointer-events: auto;
+  animation: moveleft .3s linear forwards;
+  /* outline: 1px solid #ccc; */
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+
+.toasty > i{
+  width: 50px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.toasty > div{
+  width: calc(100% - 50px);
+  padding: 8px ;
+}
+.toasty.success{
+  border-left: 4px solid  var(--tertiary);
+}
+.toasty.error{
+  border-left: 4px solid var(--red-color);
+}
+.toasty.warn{
+  border-left: 4px solid #ffaa33;
+}
+.toasty::after{ 
+   width: 100%;
+   content: '';
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  left: 0;
+  animation: anim 3s linear forwards;
+
+}
+
+.toasty.success::after{
+  background-color: var(--tertiary);
+}
+
+.toasty.error::after{
+  background-color: var(--red-color);
+}
+.toasty.warn::after{
+  background-color: #ffaa33;
+}
+
+@keyframes anim{
+  100%{
+    width: 0;
+  }
+}
+@keyframes moveleft {
+  100%{
+    transform: translateX(0);
+  }
+}
+
+
 @media (max-width: 886px) {
   .pageTitle {
     padding: 0 !important;
@@ -159,6 +248,7 @@ nav li.active {
     height: 100%;
   }
 }
+
 
 /* SMALLSCREEN NAVIGATION */
 #closeNav,

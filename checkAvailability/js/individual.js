@@ -127,6 +127,7 @@ $(document).on("click", "#btnApply", function () {
 $(document).on("click", ".btn-clear", function () {
   dispatch_days = 0;
   clearInput();
+
   $(".emptyState").removeClass("d-none");
   $(".withContent").addClass("d-none");
 });
@@ -172,6 +173,17 @@ $(document).on("click", ".btn-edit", function () {
 $(document).on("click", "#btnExport", function () {
   exportTable();
 });
+$(document).on("click", ".rmvToast", function () {
+  $(this).closest(".toasty").remove();
+});
+$(document).on(
+  "click",
+  "#grpSel, #empSel, #locSel, #startDate, #endDate",
+  function () {
+    $(this).removeClass("bg-red-100  border-red-400");
+    $(".errTxt").remove();
+  }
+);
 //#endregion
 
 //#region FUNCTIONS
@@ -541,12 +553,39 @@ function colorBar(dd) {
   }
 }
 function insertDispatch() {
+  const grp = $("#grpSel").find("option:selected").attr("grp-id");
   const empID = $("#empSel").find("option:selected").attr("emp-id");
   const locID = $("#locSel").find("option:selected").attr("loc-id");
   const startD = $("#startDate").val();
   const endD = $("#endDate").val();
+  let ctr = 0;
   toggleLoadingAnimation(true);
-  if (!empID || !locID || !startD || !endD) {
+  if (!grp) {
+    $("#grpSel").addClass("bg-red-100  border-red-400");
+    ctr++;
+  }
+  if (!empID) {
+    $("#empSel").addClass("bg-red-100  border-red-400");
+    ctr++;
+  }
+  if (!locID) {
+    $("#locSel").addClass("bg-red-100  border-red-400");
+    ctr++;
+  }
+  if (!startD) {
+    $("#startDate").addClass("bg-red-100  border-red-400");
+    ctr++;
+  }
+  if (!endD) {
+    $("#endDate").addClass("bg-red-100  border-red-400");
+    ctr++;
+  }
+  if (ctr > 0) {
+    $(".form").append(`
+    <div class="errTxt mb-3 flex items-center gap-1">
+    <i class='bx bx-info-circle text-red-600'></i>
+    <p class="text-red-600">Please complete all fields.</p>
+    </div>`);
     console.log("complete required fields");
     toggleLoadingAnimation(false);
     return;
@@ -589,6 +628,7 @@ function insertDispatch() {
             $("#daysCount").text("");
             to_add = 0;
             countTotal();
+            showToast("success", "Successfully added a dispatch entry.");
             toggleLoadingAnimation(false);
           })
           .catch((error) => {
@@ -609,6 +649,10 @@ function insertDispatch() {
   });
 }
 function clearInput() {
+  $("#grpSel, #empSel, #locSel, #startDate, #endDate").removeClass(
+    "bg-red-100  border-red-400"
+  );
+  $(".errTxt").remove();
   $("#grpSel, #empSel, #locSel").val(0);
   $("#startDate, #endDate").val("");
   to_add = 0;
@@ -886,5 +930,51 @@ function toggleLoadingAnimation(show) {
   } else {
     $("#loadingAnimation").remove();
   }
+}
+//3 TYPES OF TOAST TO USE(success, error, warn)
+//EXAMPLE showToast("error", "error message eto")
+function showToast(type, str) {
+  let toast = document.createElement("div");
+  if (type === "success") {
+    toast.classList.add("toasty");
+    toast.classList.add("success");
+    toast.innerHTML = `
+    <i class='bx bx-check text-xl text-[var(--tertiary)]'></i>
+  <div class="flex flex-col py-3">
+    <h5 class="text-md font-semibold leading-2">Success</h5>
+    <p class="text-gray-600 text-sm">${str}</p>
+    <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+  </div>
+    `;
+  }
+  if (type === "error") {
+    toast.classList.add("toasty");
+    toast.classList.add("error");
+    toast.innerHTML = `
+    <i class='bx bx-x text-xl text-[var(--red-color)]'></i>
+  <div class="flex flex-col py-3">
+    <h5 class="text-md font-semibold leading-2">Error</h5>
+    <p class="text-gray-600 text-sm">${str}</p>
+    <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+  </div>
+    `;
+  }
+  if (type === "warn") {
+    toast.classList.add("toasty");
+    toast.classList.add("warn");
+    toast.innerHTML = `
+    <i class='bx bx-info-circle text-lg text-[#ffaa33]'></i>
+    <div class="flex flex-col py-3">
+      <h5 class="text-md font-semibold leading-2">Warning</h5>
+      <p class="text-gray-600 text-sm">${str}</p>
+      <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+    </div>
+      `;
+  }
+  $(".toastBox").append(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
 }
 //#endregion
