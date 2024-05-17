@@ -15,7 +15,9 @@
 .ctaCard .contain .left h1 {
   font-size: 48px;
 }
-
+th,td{
+  white-space: nowrap;
+}
 .btn-checkAvail {
   background-color: var(--tertiary);
   cursor: pointer;
@@ -47,10 +49,7 @@
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 }
-.table-container {
-  overflow: auto;
-  height: calc(100% - 42px);
-}
+
 
 .table-container table thead tr th {
   background-color: var(--tableheader);
@@ -58,6 +57,10 @@
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
+}
+.table-container table td{
+  white-space: nowrap;
 }
 table tbody tr:hover {
   background-color: #ededed;
@@ -72,14 +75,7 @@ table tbody tr:hover {
 
   width: 480px;
 }
-.alert1 {
-  height: 50%;
-  background-color: #fff;
-}
-.alert2 {
-  height: 50%;
-  background-color: #fff;
-}
+
 .expire.short {
   color: var(--red-color);
   font-weight: 700;
@@ -94,11 +90,7 @@ table tbody tr:hover {
   text-transform: uppercase;
   font-size: 12px;
 }
-.alert2,
-.alert1 {
-  height: 100%;
-  width: 100%;
-}
+
 .alert2 .imgCont,
 .alert1 .imgCont {
   pointer-events: none;
