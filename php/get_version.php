@@ -4,6 +4,7 @@ $titleName = $_REQUEST["titleName"];
 $headString = "<title>$titleName</title>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
   <meta charset='UTF-8'> <link rel='stylesheet' type='text/css' href='global.css'>
+  <link rel='icon' href='./favicon.ico' type='image/x-icon'>
   <link rel='stylesheet' type='text/css' href='tailwindcss.min.css'>
  
   <link rel='stylesheet' type='text/css' href='css/font-awesome.css'>
