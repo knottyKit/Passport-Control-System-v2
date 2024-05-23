@@ -319,13 +319,20 @@
             </div> -->
 
             <div
-              class="grid grid-cols-[auto] xl:grid-cols-[minmax(auto,_1fr)_400px] gap-3 w-full h-full"
+              class="grid grid-cols-[repeat(2,_1fr)] xl:grid-cols-[minmax(auto,_calc(100%-400px))_400px] gap-3 w-full h-full"
             >
               <div
                 class="col-span-2 xl:col-span-1 bg-white rounded-4 shadow-sm p-3 flex flex-col justify-between"
               >
-                <h5 class="text-[20px] text-center">Monthly Dispatch Rate</h5>
-                <canvas id="dispatchChart" width="235" height="120"></canvas>
+                <h5 class="text-[20px] text-center font-semibold">
+                  Monthly Dispatch Rate
+                </h5>
+                <canvas
+                  id="dispatchChart"
+                  width="235"
+                  height="120"
+                  class="max-h-[400px]"
+                ></canvas>
               </div>
 
               <div
