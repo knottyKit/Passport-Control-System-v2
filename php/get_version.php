@@ -14,6 +14,7 @@ $headString = "<title>$titleName</title>
   <script src='tailwindcss.js'></script>
   <script src='js/jspdf.js'></script>
   <script src='js/jquery.js'></script>
+  <script src='js/chart.min.js'></script>
   <script src='js/tableToExcel.js'></script>
   <script src='js/bootstrap.min.js'></script>
   

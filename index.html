@@ -116,7 +116,7 @@
               </div>
               <h1 class="fw-semibold m-0">Dashboard</h1>
             </div>
-            <div
+            <!-- <div
               class="flex flex-col lg:flex-row gap-3 expirations h-full lg:h-[400px]"
             >
               <div
@@ -212,6 +212,216 @@
                   </thead>
                   <tbody id="dlist"></tbody>
                 </table>
+              </div>
+            </div> -->
+
+            <!-- <div class="grid grid-cols-4 gap-3 w-full h-full">
+              <div
+                class="col-span-4 2xl:col-span-3 bg-white rounded-2xl shadow-md p-3 flex flex-col justify-between"
+              >
+                <h5 class="text-[20px] text-center">Monthly Dispatch Rate</h5>
+                <canvas id="dispatchChart" width="300" height="100"></canvas>
+              </div>
+  
+              <div
+                class="col-span-4 xl:col-span-2 2xl:col-span-1 min-w-[400px] min-h-[250px] alert1 w-full bg-white shadow-sm rounded-4 d-flex flex-column position-relative overflow-hidden"
+              >
+                <div class="title text-center p-3">
+                  <h5 class="text-[18px] font-semibold">
+                    Upcoming Passport Expirations
+                  </h5>
+                </div>
+                <div class="passportExp overflow-auto h-full w-100 px-3">
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th class="emp">Passport holder</th>
+                        <th class="expiry">Expires in</th>
+                      </tr>
+                    </thead>
+                    <tbody id="eplist">
+                      <tr>
+                        <td>Collene Medrano</td>
+                        <td class="expire short">3 Months</td>
+                      </tr>
+                      <tr>
+                        <td>Collene Medrano</td>
+                        <td class="expire">10 Months</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div
+                  class="d-flex gap-1 align-items-center p-3"
+                  style="color: #8d8d8d"
+                >
+                  <i class="bx bx-info-circle"></i>
+                  <small> Displayed entries expire within 9 months.</small>
+                </div>
+                <div class="imgCont d-flex justify-content-end">
+                  <img src="images/passport.png" alt="" width="100%" />
+                </div>
+              </div>
+              <div
+                class="col-span-4 xl:col-span-2 2xl:col-span-1 min-w-[400px] min-h-[250px] 2xl:col-start-4 2xl:row-start-2 alert2 w-full bg-white shadow-sm rounded-4 d-flex flex-column position-relative overflow-hidden"
+              >
+                <div class="title text-center p-3">
+                  <h5 class="text-[18px] font-semibold">
+                    Upcoming Visa Expirations
+                  </h5>
+                </div>
+                <div class="visaExp w-100 h-full px-3 overflow-auto">
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th class="emp">Visa holder</th>
+                        <th class="expiry">Expires in</th>
+                      </tr>
+                    </thead>
+                    <tbody id="evlist"></tbody>
+                  </table>
+                </div>
+                <div
+                  class="d-flex gap-1 align-items-center p-3"
+                  style="color: #8d8d8d"
+                >
+                  <i class="bx bx-info-circle"></i>
+                  <small> Displayed entries expire within 6 months.</small>
+                </div>
+                <div class="imgCont d-flex justify-content-end">
+                  <img src="images/visa.png" alt="" width="100%" />
+                </div>
+              </div>
+              <div class="col-span-4 2xl:col-span-3 bottom h-full xl:pb-0">
+                <div class="title d-flex justify-content-between">
+                  <h3 class="font-semibold text-[18px] mb-3">
+                    Latest Dispatch List
+                  </h3>
+                </div>
+                <div
+                  class="table-container overflow-auto min-h-[450px] lg:h-[calc(100% - 42px)]"
+                >
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Passport Status</th>
+                        <th>Visa Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dlist"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div> -->
+
+            <div
+              class="grid grid-cols-[auto] xl:grid-cols-[minmax(auto,_1fr)_400px] gap-3 w-full h-full"
+            >
+              <div
+                class="col-span-2 xl:col-span-1 bg-white rounded-4 shadow-sm p-3 flex flex-col justify-between"
+              >
+                <h5 class="text-[20px] text-center">Monthly Dispatch Rate</h5>
+                <canvas id="dispatchChart" width="235" height="120"></canvas>
+              </div>
+
+              <div
+                class="col-span-2 lg:col-span-1 min-h-[250px] alert1 w-full bg-white shadow-sm rounded-4 d-flex flex-column position-relative overflow-hidden"
+              >
+                <div class="title text-center p-3">
+                  <h5 class="text-[18px] font-semibold">
+                    Upcoming Passport Expirations
+                  </h5>
+                </div>
+                <div class="passportExp overflow-auto h-full w-100 px-3">
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th class="emp">Passport holder</th>
+                        <th class="expiry">Expires in</th>
+                      </tr>
+                    </thead>
+                    <tbody id="eplist">
+                      <tr>
+                        <td>Collene Medrano</td>
+                        <td class="expire short">3 Months</td>
+                      </tr>
+                      <tr>
+                        <td>Collene Medrano</td>
+                        <td class="expire">10 Months</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div
+                  class="d-flex gap-1 align-items-center p-3"
+                  style="color: #8d8d8d"
+                >
+                  <i class="bx bx-info-circle"></i>
+                  <small> Displayed entries expire within 9 months.</small>
+                </div>
+                <div class="imgCont d-flex justify-content-end">
+                  <img src="images/passport.png" alt="" width="100%" />
+                </div>
+              </div>
+              <div
+                class="col-span-2 lg:col-span-1 xl:col-start-2 min-h-[250px] alert2 w-full bg-white shadow-sm rounded-4 d-flex flex-column position-relative overflow-hidden"
+              >
+                <div class="title text-center p-3">
+                  <h5 class="text-[18px] font-semibold">
+                    Upcoming Visa Expirations
+                  </h5>
+                </div>
+                <div class="visaExp w-100 h-full px-3 overflow-auto">
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th class="emp">Visa holder</th>
+                        <th class="expiry">Expires in</th>
+                      </tr>
+                    </thead>
+                    <tbody id="evlist"></tbody>
+                  </table>
+                </div>
+                <div
+                  class="d-flex gap-1 align-items-center p-3"
+                  style="color: #8d8d8d"
+                >
+                  <i class="bx bx-info-circle"></i>
+                  <small> Displayed entries expire within 6 months.</small>
+                </div>
+                <div class="imgCont d-flex justify-content-end">
+                  <img src="images/visa.png" alt="" width="100%" />
+                </div>
+              </div>
+              <div
+                class="col-span-2 row-start-4 lg:row-start-3 xl:col-start-1 xl:col-end-1 xl:row-start-2 bottom h-full xl:pb-0"
+              >
+                <div class="title d-flex justify-content-between">
+                  <h3 class="font-semibold text-[18px] mb-3">
+                    Latest Dispatch List
+                  </h3>
+                </div>
+                <div
+                  class="table-container overflow-auto min-h-[450px] lg:h-[calc(100% - 42px)]"
+                >
+                  <table class="table">
+                    <thead class="sticky-top bg-body">
+                      <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Passport Status</th>
+                        <th>Visa Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dlist"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

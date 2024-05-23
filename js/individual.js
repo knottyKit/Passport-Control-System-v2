@@ -25,6 +25,7 @@ checkAccess()
             fillDispatchList(dList);
             fillPassport(epList);
             fillVisa(evList);
+            dispatchGraph();
           })
           .catch((error) => {
             alert(`${error}`);
@@ -231,6 +232,56 @@ function checkAccess() {
         }
       },
     });
+  });
+}
+
+function dispatchGraph() {
+  const dispatchData = [
+    { month: "January", rate: 5 },
+    { month: "February", rate: 12 },
+    { month: "March", rate: 0 },
+    { month: "April", rate: 0 },
+    { month: "May", rate: 0 },
+    { month: "June", rate: 0 },
+    { month: "July", rate: 0 },
+    { month: "August", rate: 0 },
+    { month: "September", rate: 15 },
+    { month: "October", rate: 0 },
+    { month: "November", rate: 0 },
+    { month: "December", rate: 0 },
+  ];
+
+  // Extracting months and rates from the data
+  const months = dispatchData.map((data) => data.month);
+  const rates = dispatchData.map((data) => data.rate);
+
+  // Creating the line chart
+  const ctx = document.getElementById("dispatchChart").getContext("2d");
+  const dispatchChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: "Monthly Dispatch Rate",
+          data: rates,
+          backgroundColor: "#dcfce7", // Fill color under the line
+          borderColor: "#22c55e", // Line color
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+    },
   });
 }
 //#endregion
