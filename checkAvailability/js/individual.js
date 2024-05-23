@@ -343,10 +343,10 @@ function fillPassport(pport) {
     $("#passExp").text(pexpiry);
     if (pvalid) {
       $("#passStatus").removeClass("bg-danger");
-      $("#passStatus").addClass("bg-success");
+      $("#passStatus").addClass("bg-[var(--tertiary)]");
       $("#passStatus").text("Valid");
     } else {
-      $("#passStatus").removeClass("bg-success");
+      $("#passStatus").removeClass("bg-[var(--tertiary)]");
       $("#passStatus").addClass("bg-danger");
       $("#passStatus").text("Expired");
     }
@@ -401,10 +401,10 @@ function fillVisa(vsa) {
     $("#visaExp").text(vexpiry);
     if (vvalid) {
       $("#visaStatus").removeClass("bg-danger");
-      $("#visaStatus").addClass("bg-success");
+      $("#visaStatus").addClass("bg-[var(--tertiary)]");
       $("#visaStatus").text("Valid");
     } else {
-      $("#visaStatus").removeClass("bg-success");
+      $("#visaStatus").removeClass("bg-[var(--tertiary)]");
       $("#visaStatus").addClass("bg-danger");
       $("#visaStatus").text("Expired");
     }
@@ -546,14 +546,20 @@ function setBar(dd) {
 function colorBar(dd) {
   $("#daysWarning").addClass("d-none");
   if (dd >= full) {
-    $("#progBar").addClass("bg-danger").removeClass("bg-success bg-warning");
+    $("#progBar")
+      .addClass("bg-danger")
+      .removeClass("bg-[var(--tertiary)] bg-warning");
     if (dd > full) {
       $("#daysWarning").removeClass("d-none");
     }
   } else if (dd >= 150 && dd < full) {
-    $("#progBar").addClass("bg-warning").removeClass("bg-success bg-danger");
+    $("#progBar")
+      .addClass("bg-warning")
+      .removeClass("bg-[var(--tertiary)] bg-danger");
   } else {
-    $("#progBar").addClass("bg-success").removeClass("bg-warning bg-danger");
+    $("#progBar")
+      .addClass("bg-[var(--tertiary)]")
+      .removeClass("bg-warning bg-danger");
   }
 }
 function insertDispatch() {
@@ -982,6 +988,5 @@ function showToast(type, str) {
     toast.remove();
   }, 3000);
 }
-
 
 //#endregion

@@ -129,7 +129,7 @@
 }
 .totalThisYear .count {
   font-size: 36px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .dispatch-hist .top .title {
   font-size: 20px;
@@ -144,9 +144,11 @@
 }
 .empDetails span {
   font-size: 14px !important;
+  font-weight: 600;
 }
 .empDetails h5 {
   font-size: 30px;
+  font-weight: 700;
 }
 .btn-updateEmp {
   background-color: var(--secondary) !important;
