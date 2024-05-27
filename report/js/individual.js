@@ -11,17 +11,51 @@ switch (document.location.hostname) {
     break;
 }
 const dispTableID = ["eList", "eListNon"];
+let empDetails = [];
+let groupList = [];
 //#endregion
+// checkAccess()
+//   .then((acc) => {
+//     if (acc) {
+//       $(document).ready(function () {
+//         Promise.all([getGroups(), getYear()])
+//           .then(([grps, yr]) => {
+//             fillGroups(grps);
+//             fillYear(yr);
+//             getReport()
+//               .then((rep) => {
+//                 createTable(rep);
+//               })
+//               .catch((error) => {
+//                 alert(`${error}`);
+//               });
+//           })
+//           .catch((error) => {
+//             alert(`${error}`);
+//           });
+//       });
+//     } else {
+//       alert("Access denied");
+//       window.location.href = `${rootFolder}`;
+//     }
+//   })
+//   .catch((error) => {
+//     alert(`${error}`);
+//   });
 checkAccess()
-  .then((acc) => {
-    if (acc) {
+  .then((emp) => {
+    if (emp.isSuccess) {
+      empDetails = emp.data;
       $(document).ready(function () {
+        fillEmployeeDetails();
         Promise.all([getGroups(), getYear()])
           .then(([grps, yr]) => {
-            fillGroups(grps);
+            groupList = grps;
             fillYear(yr);
+            fillGroups(groupList);
             getReport()
               .then((rep) => {
+                console.log(rep);
                 createTable(rep);
               })
               .catch((error) => {
@@ -33,7 +67,7 @@ checkAccess()
           });
       });
     } else {
-      alert("Access denied");
+      alert(emp.message);
       window.location.href = `${rootFolder}`;
     }
   })
@@ -214,27 +248,85 @@ function fillGroups(grps) {
     grpSelect.append(option);
   });
 }
+// function checkAccess() {
+//   return new Promise((resolve, reject) => {
+//     $.ajax({
+//       type: "GET",
+//       url: "php/check_permission.php",
+//       dataType: "json",
+//       success: function (data) {
+//         const acc = data;
+//         resolve(acc);
+//       },
+//       error: function (xhr, status, error) {
+//         if (xhr.status === 404) {
+//           reject("Not Found Error: The requested resource was not found.");
+//         } else if (xhr.status === 500) {
+//           reject("Internal Server Error: There was a server error.");
+//         } else {
+//           reject("An unspecified error occurred.");
+//         }
+//       },
+//     });
+//   });
+// }
 function checkAccess() {
+  const response = {
+    isSuccess: true,
+    data: {
+      id: 6969,
+      group: "Systems Group",
+      empname: {
+        firstname: "Korin Kitto",
+        surname: "Medurano",
+      },
+    },
+  };
+  // const response = {
+  //   isSuccess: false,
+  //   message: "Access Denied",
+  // };
+  // const response = {
+  //   isSuccess: false,
+  //   message: "Not logged in",
+  // };
   return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "GET",
-      url: "php/check_permission.php",
-      dataType: "json",
-      success: function (data) {
-        const acc = data;
-        resolve(acc);
-      },
-      error: function (xhr, status, error) {
-        if (xhr.status === 404) {
-          reject("Not Found Error: The requested resource was not found.");
-        } else if (xhr.status === 500) {
-          reject("Internal Server Error: There was a server error.");
-        } else {
-          reject("An unspecified error occurred.");
-        }
-      },
-    });
+    //   $.ajax({
+    //     type: "GET",
+    //     url: "global/check_login.php",
+    //     dataType: "json",
+    //     success: function (data) {
+    //       const acc = data;
+    //       resolve(acc);
+    //     },
+    //     error: function (xhr, status, error) {
+    //       if (xhr.status === 404) {
+    //         reject("Not Found Error: The requested resource was not found.");
+    //       } else if (xhr.status === 500) {
+    //         reject("Internal Server Error: There was a server error.");
+    //       } else {
+    //         reject("An unspecified error occurred.");
+    //       }
+    //     },
+    //   });
+    resolve(response);
   });
+}
+function fillEmployeeDetails() {
+  const fName = empDetails.empname.firstname;
+  const sName = empDetails.empname.surname;
+  const initials = getInitials(fName, sName);
+  const grpName = empDetails.group;
+  $("#empLabel").html(`${fName} ${sName}`);
+  $("#empInitials").html(`${initials}`);
+  $("#grpLabel").html(`${grpName}`);
+}
+function getInitials(firstname, surname) {
+  let initials = "";
+  var firstInitial = firstname.charAt(0);
+  var lastInitial = surname.charAt(0);
+  initials = `${firstInitial}${lastInitial}`;
+  return initials.toUpperCase();
 }
 function getYear() {
   return new Promise((resolve, reject) => {

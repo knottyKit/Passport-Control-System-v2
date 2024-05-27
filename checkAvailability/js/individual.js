@@ -10,28 +10,36 @@ switch (document.location.hostname) {
     rootFolder = "//kdt-ph/";
     break;
 }
+let empDetails = [];
 var dispatch_days = 0;
 var to_add = 0;
 const full = 183;
 var dHistory = [];
 //#endregion
 checkAccess()
-  .then((acc) => {
-    if (acc) {
+  .then((emp) => {
+    if (emp.isSuccess) {
+      empDetails = emp.data;
       $(document).ready(function () {
+        fillEmployeeDetails();
         getYears();
-        Promise.all([getGroups(), getEmployees(), getLocations()])
-          .then(([grps, emps, locs]) => {
+        getGroups()
+          .then((grps) => {
             fillGroups(grps);
-            fillEmployees(emps);
-            fillLocations(locs);
+            Promise.all([getEmployees(), getLocations()])
+              .then(([emps, locs]) => {
+                console.log(emps);
+                fillEmployees(emps);
+                fillLocations(locs);
+              })
+              .catch((error) => {
+                alert(`${error}`);
+              });
           })
-          .catch((error) => {
-            alert(`${error}`);
-          });
+          .catch(() => {});
       });
     } else {
-      alert("Access denied");
+      alert(emp.message);
       window.location.href = `${rootFolder}`;
     }
   })
@@ -739,27 +747,85 @@ function deleteDispatch() {
     },
   });
 }
+// function checkAccess() {
+//   return new Promise((resolve, reject) => {
+//     $.ajax({
+//       type: "GET",
+//       url: "php/check_permission.php",
+//       dataType: "json",
+//       success: function (data) {
+//         const acc = data;
+//         resolve(acc);
+//       },
+//       error: function (xhr, status, error) {
+//         if (xhr.status === 404) {
+//           reject("Not Found Error: The requested resource was not found.");
+//         } else if (xhr.status === 500) {
+//           reject("Internal Server Error: There was a server error.");
+//         } else {
+//           reject("An unspecified error occurred.1");
+//         }
+//       },
+//     });
+//   });
+// }
 function checkAccess() {
+  const response = {
+    isSuccess: true,
+    data: {
+      id: 6969,
+      group: "Systems Group",
+      empname: {
+        firstname: "Korin Kitto",
+        surname: "Medurano",
+      },
+    },
+  };
+  // const response = {
+  //   isSuccess: false,
+  //   message: "Access Denied",
+  // };
+  // const response = {
+  //   isSuccess: false,
+  //   message: "Not logged in",
+  // };
   return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "GET",
-      url: "php/check_permission.php",
-      dataType: "json",
-      success: function (data) {
-        const acc = data;
-        resolve(acc);
-      },
-      error: function (xhr, status, error) {
-        if (xhr.status === 404) {
-          reject("Not Found Error: The requested resource was not found.");
-        } else if (xhr.status === 500) {
-          reject("Internal Server Error: There was a server error.");
-        } else {
-          reject("An unspecified error occurred.1");
-        }
-      },
-    });
+    //   $.ajax({
+    //     type: "GET",
+    //     url: "global/check_login.php",
+    //     dataType: "json",
+    //     success: function (data) {
+    //       const acc = data;
+    //       resolve(acc);
+    //     },
+    //     error: function (xhr, status, error) {
+    //       if (xhr.status === 404) {
+    //         reject("Not Found Error: The requested resource was not found.");
+    //       } else if (xhr.status === 500) {
+    //         reject("Internal Server Error: There was a server error.");
+    //       } else {
+    //         reject("An unspecified error occurred.");
+    //       }
+    //     },
+    //   });
+    resolve(response);
   });
+}
+function fillEmployeeDetails() {
+  const fName = empDetails.empname.firstname;
+  const sName = empDetails.empname.surname;
+  const initials = getInitials(fName, sName);
+  const grpName = empDetails.group;
+  $("#empLabel").html(`${fName} ${sName}`);
+  $("#empInitials").html(`${initials}`);
+  $("#grpLabel").html(`${grpName}`);
+}
+function getInitials(firstname, surname) {
+  let initials = "";
+  var firstInitial = firstname.charAt(0);
+  var lastInitial = surname.charAt(0);
+  initials = `${firstInitial}${lastInitial}`;
+  return initials.toUpperCase();
 }
 
 function saveEditEntry() {
