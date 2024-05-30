@@ -20,6 +20,7 @@ checkAccess()
   .then((emp) => {
     if (emp.isSuccess) {
       empDetails = emp.data;
+      console.log(empDetails);
       $(document).ready(function () {
         fillEmployeeDetails();
         getYears();
@@ -28,7 +29,6 @@ checkAccess()
             fillGroups(grps);
             Promise.all([getEmployees(), getLocations()])
               .then(([emps, locs]) => {
-                console.log(emps);
                 fillEmployees(emps);
                 fillLocations(locs);
               })
