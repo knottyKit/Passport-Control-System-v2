@@ -215,17 +215,17 @@ function formatDays(numberOfDays) {
   }
 }
 function checkAccess() {
-  const response = {
-    isSuccess: true,
-    data: {
-      id: 6969,
-      group: "Systems Group",
-      empname: {
-        firstname: "Korin Kitto",
-        surname: "Medurano",
-      },
-    },
-  };
+  // const response = {
+  //   isSuccess: true,
+  //   data: {
+  //     id: 6969,
+  //     group: "Systems Group",
+  //     empname: {
+  //       firstname: "Korin Kitto",
+  //       surname: "Medurano",
+  //     },
+  //   },
+  // };
   // const response = {
   //   isSuccess: false,
   //   message: "Access Denied",
@@ -235,30 +235,31 @@ function checkAccess() {
   //   message: "Not logged in",
   // };
   return new Promise((resolve, reject) => {
-    //   $.ajax({
-    //     type: "GET",
-    //     url: "global/check_login.php",
-    //     dataType: "json",
-    //     success: function (data) {
-    //       const acc = data;
-    //       resolve(acc);
-    //     },
-    //     error: function (xhr, status, error) {
-    //       if (xhr.status === 404) {
-    //         reject("Not Found Error: The requested resource was not found.");
-    //       } else if (xhr.status === 500) {
-    //         reject("Internal Server Error: There was a server error.");
-    //       } else {
-    //         reject("An unspecified error occurred.");
-    //       }
-    //     },
-    //   });
-    resolve(response);
+    $.ajax({
+      type: "GET",
+      url: "global/check_login.php",
+      dataType: "json",
+      success: function (data) {
+        console.log(data);
+        const acc = data;
+        resolve(acc);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred.");
+        }
+      },
+    });
+    // resolve(response);
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = empDetails.firstname;
+  const sName = empDetails.surname;
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
