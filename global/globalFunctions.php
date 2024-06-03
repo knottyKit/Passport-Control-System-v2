@@ -16,6 +16,7 @@ function checkOverlap($empnum, $range)
 
     return $isOverlap;
 }
+
 function allGroupAccess($empnum)
 {
     global $connpcs;
@@ -30,6 +31,7 @@ function allGroupAccess($empnum)
     }
     return $access;
 }
+
 function getMembers($empnum)
 {
     global $connnew;
@@ -49,6 +51,7 @@ function getMembers($empnum)
     }
     return $members;
 }
+
 function getGroups($empnum)
 {
     global $connnew;
@@ -56,42 +59,30 @@ function getGroups($empnum)
     // echo $allGroupAccess;
     $myGroups = array();
     if (!$allGroupAccess) {
-        $groupsQ = "SELECT gl.id AS id, gl.name AS nme, gl.abbreviation AS abbreviation FROM kdtphdb_new.group_list AS gl JOIN pcosdb.khi_details AS kd ON gl.id=kd.group_id WHERE kd.number = :empnum";
+        $groupsQ = "SELECT gl.id AS `id`, gl.name AS `name`, gl.abbreviation AS `abbr` FROM kdtphdb_new.group_list AS gl JOIN pcosdb.khi_details AS kd 
+        ON gl.id = kd.group_id WHERE kd.number = :empnum";
         $groupsStmt = $connnew->prepare($groupsQ);
         $groupsStmt->execute([":empnum" => $empnum]);
         if ($groupsStmt->rowCount() > 0) {
             $groupArr = $groupsStmt->fetchAll();
             foreach ($groupArr as $grp) {
-                $output = array();
-                $group_id = $grp['id'];
-                $group_name = $grp['nme'];
-                $group_abbr = $grp['abbreviation'];
-                $output['id'] = $group_id;
-                $output['name'] = $group_name;
-                $output['abbr'] = $group_abbr;
-                array_push($myGroups, $output);
+                array_push($myGroups, $grp);
             }
         }
     } else {
-        $groupsQ = "SELECT * FROM `group_list` ORDER BY `abbreviation`";
+        $groupsQ = "SELECT `id`, `name`, `abbreviation` as `abbr` FROM `group_list` ORDER BY `abbreviation`";
         $groupsStmt = $connnew->prepare($groupsQ);
         $groupsStmt->execute();
         if ($groupsStmt->rowCount() > 0) {
             $groupArr = $groupsStmt->fetchAll();
             foreach ($groupArr as $grp) {
-                $output = array();
-                $group_id = $grp['id'];
-                $group_name = $grp['name'];
-                $group_abbr = $grp['abbreviation'];
-                $output['id'] = $group_id;
-                $output['name'] = $group_name;
-                $output['abbr'] = $group_abbr;
-                array_push($myGroups, $output);
+                array_push($myGroups, $grp);
             }
         }
     }
     return $myGroups;
 }
+
 function getKHIMembers($empnum)
 {
     global $connpcs;

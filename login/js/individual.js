@@ -18,27 +18,36 @@ var sortKey = 1;
 
 checkAccess()
   .then((emp) => {
-    if (emp.isSuccess) {
-      window.location.href = `${rootFolder}/PCSKHI/`;
-    } else {
-      $(document).ready(function () {
-        animation;
-      });
-    }
+    console.log(emp);
+    // if (emp.isSuccess) {
+    //   window.location.href = `${rootFolder}/PCSKHI/`;
+    // } else {
+    //   $(document).ready(function () {
+    //     animation;
+    //   });
+    // }
   })
   .catch((error) => {
     alert(`${error}`);
   });
 //#region BINDS
-$(document).on("click", "#loginBtn", function () {
-  Login().then((res) => {
-    if (res.isSuccess) {
-      window.location.href = `${rootFolder}/PCSKHI/`;
-    } else {
-      alert(`${res.message}`);
-      $("#userid").val("");
-    }
-  });
+$(document).on("submit", "#loginForm", function (event) {
+  event.preventDefault();
+  console.log("gana");
+  Login()
+    .then((res) => {
+      if (res.isSuccess) {
+        // window.location.href = `${rootFolder}/PCSKHI/`;
+        alert(`${res.message}`);
+        $("#userid").val("");
+      } else {
+        alert(`${res.message}`);
+        $("#userid").val("");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 //#endregion
 
@@ -63,30 +72,30 @@ function checkAccess() {
   //   isSuccess: false,
   //   message: "Access Denied",
   // };
-  const response = {
-    isSuccess: false,
-    message: "Not logged in",
-  };
+  // const response = {
+  //   isSuccess: false,
+  //   message: "Not logged in",
+  // };
   return new Promise((resolve, reject) => {
-    // $.ajax({
-    //   type: "GET",
-    //   url: "../global/check_login.php",
-    //   dataType: "json",
-    //   success: function (data) {
-    //     const acc = data;
-    //     resolve(acc);
-    //   },
-    //   error: function (xhr, status, error) {
-    //     if (xhr.status === 404) {
-    //       reject("Not Found Error: The requested resource was not found.");
-    //     } else if (xhr.status === 500) {
-    //       reject("Internal Server Error: There was a server error.");
-    //     } else {
-    //       reject("An unspecified error occurred.1");
-    //     }
-    //   },
-    // });
-    resolve(response);
+    $.ajax({
+      type: "GET",
+      url: "../global/check_login.php",
+      dataType: "json",
+      success: function (data) {
+        // console.log(data);
+        const acc = data;
+        resolve(acc);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred.1");
+        }
+      },
+    });
   });
 }
 function animation() {
