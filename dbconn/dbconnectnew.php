@@ -4,8 +4,8 @@ $config = [
   'dbname' => 'kdtphdb_new',
   'charset' => 'utf8mb4'
 ];
-$username = 'kdt';
-$password = 'none';
+$username = 'root';
+$password = '';
 $dsn = 'mysql:' . http_build_query($config, '', ';');
 try {
   $connnew = new PDO($dsn, $username, $password, [

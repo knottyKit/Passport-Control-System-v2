@@ -32,23 +32,29 @@ function allGroupAccess($empnum)
     return $access;
 }
 
-function getMembers($empnum)
+function getMembers($empnum, $groups)
 {
     global $connnew;
     $members = array();
     $yearMonth = date("Y-m-01");
-    $myGroups = getGroups($empnum);
+    if($groups != 0) {
+        $myGroups = explode(",", $groups);
+    } else {
+        $myGroups = getGroups($empnum);
+        $myGroups = array_column($myGroups, "id");
+    }
     foreach ($myGroups as $grp) {
-        $memsQ = "SELECT `id` FROM `employee_list` WHERE `group_id` = :grp AND (`resignation_date` IS NULL OR `resignation_date` = '0000-00-00' OR `resignation_date` > :yearMonth) 
+        $memsQ = "SELECT CONCAT(`surname`, ', ', `firstname`) as `name`, `id` FROM `employee_list` WHERE `group_id` = :grp AND (`resignation_date` IS NULL OR 
+        `resignation_date` = '0000-00-00' OR `resignation_date` > :yearMonth) 
         AND `nickname` <> ''";
         $memsStmt = $connnew->prepare($memsQ);
-        $memsStmt->execute([":grp" => $grp['id'], ":yearMonth" => $yearMonth]);
+        $memsStmt->execute([":grp" => $grp, ":yearMonth" => $yearMonth]);
         if ($memsStmt->rowCount() > 0) {
             $memArr = $memsStmt->fetchAll();
-            $arrValues = array_column($memArr, "id");
-            $members = array_merge($members, $arrValues);
+            $members = array_merge($members, $memArr);
         }
     }
+    usort($members, "arraySort");
     return $members;
 }
 
@@ -92,7 +98,8 @@ function getKHIMembers($empnum)
         return $group['id'];
     }, $myGroups);
     $grpStmt = "AND kd.group_id IN (" . implode(',', $group_ids) . ")";
-    $memsQ = "SELECT kd.number,kd.surname,kd.firstname,gl.id,gl.abbreviation FROM pcosdb.khi_details AS kd JOIN kdtphdb_new.group_list AS gl ON kd.group_id=gl.id WHERE kd.is_active=1 $grpStmt ORDER BY `number`";
+    $memsQ = "SELECT kd.number ,kd.surname, kd.firstname, gl.id, gl.abbreviation FROM pcosdb.khi_details AS kd JOIN kdtphdb_new.group_list AS gl ON kd.group_id = gl.id WHERE 
+    kd.is_active = 1 $grpStmt ORDER BY `number`";
     $memsStmt = $connpcs->prepare($memsQ);
     $memsStmt->execute();
     if ($memsStmt->rowCount() > 0) {
@@ -115,5 +122,10 @@ function getKHIMembers($empnum)
         }
     }
     return $members;
+}
+
+function arraySort($a, $b)
+{
+    return strcmp($a["name"], $b["name"]);
 }
 #endregion

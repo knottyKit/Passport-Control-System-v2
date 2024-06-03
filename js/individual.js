@@ -75,6 +75,7 @@ function getDispatchlist() {
       },
       dataType: "json",
       success: function (data) {
+        console.log(data);
         const dList = data;
         resolve(dList);
       },

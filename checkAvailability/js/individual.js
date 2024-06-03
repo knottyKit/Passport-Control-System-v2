@@ -206,6 +206,7 @@ function getGroups() {
       url: "php/get_groups.php",
       dataType: "json",
       success: function (response) {
+        console.log(response);
         const grps = response;
         resolve(grps);
       },
@@ -244,6 +245,7 @@ function getEmployees() {
       },
       dataType: "json",
       success: function (response) {
+        console.log(response);
         const emps = response;
         resolve(emps);
       },
