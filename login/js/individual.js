@@ -33,7 +33,9 @@ checkAccess()
 
 // animation();s
 //#region BINDS
-$(document).on("click", "#loginBtn", function () {
+$(document).on("submit", "#loginForm", function (event) {
+  event.preventDefault();
+  console.log("gana");
   Login()
     .then((res) => {
       if (res.isSuccess) {

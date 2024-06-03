@@ -91,9 +91,8 @@ function getKHIMembers($empnum)
     $group_ids = array_map(function ($group) {
         return $group['id'];
     }, $myGroups);
-    $grpStmt = "(" . implode(',', $group_ids) . ")";
-    $memsQ = "SELECT kd.number, kd.surname, kd.firstname, gl.id, gl.abbreviation FROM pcosdb.khi_details AS kd JOIN kdtphdb_new.group_list AS gl ON kd.group_id = gl.id 
-    WHERE kd.group_id IN $grpStmt ORDER BY `number`";
+    $grpStmt = "AND kd.group_id IN (" . implode(',', $group_ids) . ")";
+    $memsQ = "SELECT kd.number,kd.surname,kd.firstname,gl.id,gl.abbreviation FROM pcosdb.khi_details AS kd JOIN kdtphdb_new.group_list AS gl ON kd.group_id=gl.id WHERE kd.is_active=1 $grpStmt ORDER BY `number`";
     $memsStmt = $connpcs->prepare($memsQ);
     $memsStmt->execute();
     if ($memsStmt->rowCount() > 0) {
