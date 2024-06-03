@@ -17,20 +17,24 @@ let accessTypes = {
   1: "Admin",
 };
 let employees = [];
+let filtered_employees = [];
 let groups = [];
+let sortNumAsc = false;
+let sortNameAsc = true;
 //#endregion
 checkAccess()
   .then((emp) => {
     if (emp.isSuccess) {
       empDetails = emp.data;
       $(document).ready(function () {
+        createAccessSelections();
         fillEmployeeDetails();
         Promise.all([getGroups(), getEmployees()])
           .then(([grps, emps]) => {
             groups = grps;
             fillGroups(groups);
             employees = emps;
-            fillEmployees(employees);
+            searchEmployee(employees);
           })
           .catch((error) => {
             alert(`${error}`);
@@ -65,8 +69,12 @@ $(document).on("change", "#grpSel", function () {
 $(document).on("input", "#empSearch", function () {
   searchEmployee();
 });
-$(document).on("click", ".sortEmpNum", function () {});
-$(document).on("click", ".sortEmpName", function () {});
+$(document).on("click", ".sortEmpNum", function () {
+  toggleSortID();
+});
+$(document).on("click", ".sortEmpName", function () {
+  toggleSortName();
+});
 $(document).on("click", "#addUser", function () {
   addUser();
 });
@@ -94,9 +102,38 @@ $(document).on("click", ".btn-removeUser", function () {
   var empname = $(this).closest("tr").find("td:eq(1)").text();
   fillRemoveModal(empnum, empname);
 });
+$(document).on("click", "#removeUser", function () {
+  removeUser()
+    .then((res) => {
+      if (res.isSuccess) {
+        getEmployees().then((emps) => {
+          employees = emps;
+          searchEmployee(employees);
+          $(".btn-close").click();
+        });
+      } else {
+        alert(res.error);
+      }
+    })
+    .catch((error) => {
+      alert(`${error}`);
+    });
+});
 //#endregion
 
 //#region FUNCTIONS
+function createAccessSelections() {
+  let $select = $(".empAccess");
+  $select.empty();
+  $.each(accessTypes, function (key, value) {
+    $select.append(
+      $("<option>", {
+        value: key,
+        text: value,
+      })
+    );
+  });
+}
 function getGroups() {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -123,14 +160,21 @@ function getGroups() {
   });
 }
 function fillGroups(grps) {
-  var grpSelect = $("#grpSel");
+  const grpSelect = $("#grpSel");
+  const addSelect = $("#empGroup");
+  const editSelect = $("#editGroup");
+  grpSelect.empty();
+  addSelect.empty();
+  editSelect.empty();
   grpSelect.html("<option value=0>Select Group</option>");
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.id)
       .text(item.name)
       .attr("grp-id", item.id);
-    grpSelect.append(option);
+    grpSelect.append(option.clone());
+    addSelect.append(option.clone());
+    editSelect.append(option.clone());
   });
 }
 function getEmployees() {
@@ -164,7 +208,7 @@ function fillEmployees(emps) {
   $.each(emps, function (index, item) {
     var row = $(`<tr d-id=${item.empID}>`);
     row.append(`<td>${item.id}</td>`);
-    row.append(`<td>${item.fname} ${item.sname}</td>`);
+    row.append(`<td>${item.sname}, ${item.fname}</td>`);
     row.append(`<td grp-id='${item.group.id}'>${item.group.abbr}</td>`);
     row.append(`<td>${accessTypes[item.type]}</td>`);
     const options =
@@ -200,7 +244,28 @@ function searchEmployee() {
     const groupMatch = grp == 0 || emp.group.id == grp;
     return searchMatch && groupMatch;
   });
+  filtered_employees = results;
   fillEmployees(results);
+}
+function toggleSortID() {
+  let sortedList = filtered_employees.slice().sort(function (a, b) {
+    return sortNumAsc ? a.id - b.id : b.id - a.id;
+  });
+  sortNumAsc = !sortNumAsc;
+  fillEmployees(sortedList);
+}
+function toggleSortName() {
+  let sortedList = filtered_employees.slice().sort(function (a, b) {
+    var nameA = a.sname.toUpperCase() + a.fname.toUpperCase();
+    var nameB = b.sname.toUpperCase() + b.fname.toUpperCase();
+    if (sortNameAsc) {
+      return nameA.localeCompare(nameB);
+    } else {
+      return nameB.localeCompare(nameA);
+    }
+  });
+  fillEmployees(sortedList);
+  sortNameAsc = !sortNameAsc;
 }
 function checkEmpty(tbodyID) {
   var tbodySelector = "#" + tbodyID;
@@ -329,5 +394,31 @@ function fillRemoveModal(empnum, empname) {
   $("#removeId").text(empnum);
   $("#removeName").text(empname);
   $("#removeUserModal").modal("show");
+}
+function removeUser() {
+  const khiid = $("#removeId").text();
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "php/remove_khi.php",
+      data: {
+        empID: khiid,
+      },
+      dataType: "json",
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while removing user.");
+        }
+      },
+    });
+  });
 }
 //#endregion
