@@ -14,7 +14,6 @@ $dateFilter = date("Y-m-d");
 // if (!empty($_POST['ySelect'])) {
 //     $dateFilter = date("Y", strtotime($_POST['ySelect']));
 // }
-
 #endregion
 
 #region Entries Query
@@ -55,6 +54,6 @@ try {
 } catch (Exception $e) {
     $errorMsg['catch'] =  "Connection failed: " . $e->getMessage();
 }
-
 #endregion
+
 echo json_encode($dispatchList, JSON_PRETTY_PRINT);

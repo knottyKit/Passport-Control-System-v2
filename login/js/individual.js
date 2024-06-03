@@ -19,24 +19,26 @@ var sortKey = 1;
 checkAccess()
   .then((emp) => {
     console.log(emp);
-    // if (emp.isSuccess) {
-    //   window.location.href = `${rootFolder}/PCSKHI/`;
-    // } else {
-    //   $(document).ready(function () {
-    //     animation;
-    //   });
-    // }
+    if (emp.isSuccess) {
+      window.location.href = `${rootFolder}/PCSKHI/`;
+    } else {
+      $(document).ready(function () {
+        animation();
+      });
+    }
   })
   .catch((error) => {
     alert(`${error}`);
   });
+
+// animation();s
 //#region BINDS
 $(document).on("click", "#loginBtn", function () {
   Login()
     .then((res) => {
       if (res.isSuccess) {
-        // window.location.href = `${rootFolder}/PCSKHI/`;
-        alert(`${res.message}`);
+        window.location.href = `${rootFolder}/PCSKHI/`;
+        // alert(`${res.message}`);
         $("#userid").val("");
       } else {
         alert(`${res.message}`);
