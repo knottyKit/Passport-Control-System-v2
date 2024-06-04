@@ -31,37 +31,44 @@ if (!empty($_POST["grpID"])) {
 if (!empty($_POST["empacc"])) {
     $empacc = $_POST["empacc"];
 }
+$conn_pcs_disable->beginTransaction();
 #endregion
 
 #region main query
 try {
     $checkID = "SELECT COUNT(*) FROM `khi_details` WHERE `number` = :empID AND `is_active` = 1";
-    $checkIDStmt = $connpcs->prepare($checkID);
+    $checkIDStmt = $conn_pcs_disable->prepare($checkID);
     $checkIDStmt->execute([":empID" => "$empID"]);
     $checkCount = $checkIDStmt->fetchColumn();
 
-    if($checkCount == 0) {
+    if ($checkCount == 0) {
         $insertUser = "INSERT INTO `khi_details`(`number`, `surname`, `firstname`, `group_id`, `is_active`) 
         VALUES (:empID, :lname, :fname, :grpID, 1)";
-        $insertUserStmt = $connpcs->prepare($insertUser);
-        if($insertUserStmt->execute([":empID" => "$empID", ":lname" => "$lname", ":fname" => "$fname", ":grpID" => "$grpID"])) {
-            if($empacc == 1) {
+        $insertUserStmt = $conn_pcs_disable->prepare($insertUser);
+        if ($insertUserStmt->execute([":empID" => "$empID", ":lname" => "$lname", ":fname" => "$fname", ":grpID" => "$grpID"])) {
+            if ($empacc == 1) {
                 $insertAccess = "INSERT INTO `khi_user_permissions`(`permission_id`, `employee_id`) VALUES (1, :empID)";
-                $insertAccessStmt = $connpcs->prepare($insertAccess);
-                if($insertAccessStmt->execute([":empID" => "$empID"])) {
+                $insertAccessStmt = $conn_pcs_disable->prepare($insertAccess);
+                if ($insertAccessStmt->execute([":empID" => "$empID"])) {
+                    $conn_pcs_disable->commit();
                     $message["isSuccess"] = 1;
                     $message["message"] = "User successfully added";
+                } else {
+                    $conn_pcs_disable->rollBack();
                 }
+            } else {
+                $conn_pcs_disable->commit();
+                $message["isSuccess"] = 1;
+                $message["message"] = "User successfully added";
             }
         }
-
-        
     } else {
+        $conn_pcs_disable->rollBack();
         $message["isSuccess"] = 0;
         $message["message"] = "User ID already registered";
     }
-
 } catch (Exception $e) {
+    $conn_pcs_disable->rollBack();
     echo "Connection failed: " . $e->getMessage();
 }
 #endregion

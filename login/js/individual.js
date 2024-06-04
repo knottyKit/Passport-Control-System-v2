@@ -20,7 +20,7 @@ checkAccess()
   .then((emp) => {
     console.log(emp);
     if (emp.isSuccess) {
-      window.location.href = `${rootFolder}/PCSKHI/`;
+      window.location.href = `${rootFolder}/PCSKHI`;
     } else {
       $(document).ready(function () {
         animation();

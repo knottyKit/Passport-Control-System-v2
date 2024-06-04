@@ -76,6 +76,7 @@ $(document).on("click", "#addUser", function () {
     .then((res) => {
       if (res.isSuccess) {
         $("#addUserModal .btn-close").click();
+        showToast("success", "Added successfully.");
         getEmployees().then((emps) => {
           employees = emps;
           searchEmployee(employees);
@@ -83,7 +84,7 @@ $(document).on("click", "#addUser", function () {
       }
     })
     .catch((error) => {
-      alert(`${error}`);
+      showToast("error", `${error}`);
     });
 });
 $(document).on(
@@ -118,9 +119,10 @@ $(document).on("click", "#removeUser", function () {
           employees = emps;
           searchEmployee(employees);
           $(".btn-close").click();
+          showToast("success", "Removed successfully.");
         });
       } else {
-        alert(res.error);
+        showToast("error", `${res.error}`);
       }
     })
     .catch((error) => {
@@ -128,15 +130,23 @@ $(document).on("click", "#removeUser", function () {
     });
 });
 $(document).on("click", "#saveBtn", function () {
-  saveUser().then((res) => {
-    if (res.isSuccess) {
-      $(".btn-close").click();
-      getEmployees().then((emps) => {
-        employees = emps;
-        searchEmployee(employees);
-      });
-    }
-  });
+  saveUser()
+    .then((res) => {
+      if (res.isSuccess) {
+        $(".btn-close").click();
+        showToast("success", "Saved successfully.");
+        Promise.all([getGroups(), getEmployees()]).then(([grps, emps]) => {
+          groups = grps;
+          fillGroups(groups);
+          employees = emps;
+          searchEmployee(employees);
+        });
+      }
+    })
+    .catch((error) => {
+      alert(`${error}`);
+      showToast("error", `${error}`);
+    });
 });
 $(document).on("click", "#logoutBtn", function () {
   logOut()
@@ -400,7 +410,6 @@ function addUser() {
     if (ctr > 0) {
       resolve({ isSuccess: false, error: "Incomplete Fields" });
     } else {
-      resolve(empId, empFName, empLName, empGroup, empAccess);
       $.ajax({
         type: "POST",
         url: "php/add_khi_user.php",
@@ -411,7 +420,7 @@ function addUser() {
           grpID: empGroup,
           empacc: empAccess,
         },
-        dataType: "dataType",
+        dataType: "json",
         success: function (response) {
           const res = response;
           resolve(res);
@@ -488,32 +497,29 @@ function saveUser() {
   const groupid = $("#editGroup").val();
   const accessid = $("#empAccessEdit").val();
   return new Promise((resolve, reject) => {
-    resolve({
-      isSuccess: true,
+    $.ajax({
+      type: "POST",
+      url: "php/edit_khit_user.php",
+      data: {
+        empID: empnumber,
+        grpID: groupid,
+        empacc: accessid,
+      },
+      dataType: "json",
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while editing KHI member");
+        }
+      },
     });
-    // $.ajax({
-    //   type: "PSOT",
-    //   url: "php/edit_khi.php",
-    //   data: {
-    //     empid: empnumber,
-    //     grpid: groupid,
-    //     accid: accessid,
-    //   },
-    //   dataType: "json",
-    //   success: function (response) {
-    //     const res = response;
-    //     resolve(res);
-    //   },
-    //   error: function (xhr, status, error) {
-    //     if (xhr.status === 404) {
-    //       reject("Not Found Error: The requested resource was not found.");
-    //     } else if (xhr.status === 500) {
-    //       reject("Internal Server Error: There was a server error.");
-    //     } else {
-    //       reject("An unspecified error occurred while editing KHI member");
-    //     }
-    //   },
-    // });
   });
 }
 function logOut() {
@@ -538,5 +544,51 @@ function logOut() {
       },
     });
   });
+}
+//3 TYPES OF TOAST TO USE(success, error, warn)
+//EXAMPLE showToast("error", "error message eto")
+function showToast(type, str) {
+  let toast = document.createElement("div");
+  if (type === "success") {
+    toast.classList.add("toasty");
+    toast.classList.add("success");
+    toast.innerHTML = `
+    <i class='bx bx-check text-xl text-[var(--tertiary)]'></i>
+  <div class="flex flex-col py-3">
+    <h5 class="text-md font-semibold leading-2">Success</h5>
+    <p class="text-gray-600 text-sm">${str}</p>
+    <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+  </div>
+    `;
+  }
+  if (type === "error") {
+    toast.classList.add("toasty");
+    toast.classList.add("error");
+    toast.innerHTML = `
+    <i class='bx bx-x text-xl text-[var(--red-color)]'></i>
+  <div class="flex flex-col py-3">
+    <h5 class="text-md font-semibold leading-2">Error</h5>
+    <p class="text-gray-600 text-sm">${str}</p>
+    <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+  </div>
+    `;
+  }
+  if (type === "warn") {
+    toast.classList.add("toasty");
+    toast.classList.add("warn");
+    toast.innerHTML = `
+    <i class='bx bx-info-circle text-lg text-[#ffaa33]'></i>
+    <div class="flex flex-col py-3">
+      <h5 class="text-md font-semibold leading-2">Warning</h5>
+      <p class="text-gray-600 text-sm">${str}</p>
+      <span><i class='rmvToast bx bx-x absolute top-[10px] right-[10px] text-[16px] cursor-pointer' ></i></span>
+    </div>
+      `;
+  }
+  $(".toastBox").append(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
 }
 //#endregion
