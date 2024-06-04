@@ -22,12 +22,13 @@ checkAccess()
           getDispatchlist(),
           getExpiringPassport(),
           getExpiringVisa(),
+          getGraph(),
         ])
-          .then(([dList, epList, evList]) => {
+          .then(([dList, epList, evList, dData]) => {
             fillDispatchList(dList);
             fillPassport(epList);
             fillVisa(evList);
-            dispatchGraph();
+            dispatchGraph(dData);
           })
           .catch((error) => {
             alert(`${error}`);
@@ -278,25 +279,49 @@ function getInitials(firstname, surname) {
   initials = `${firstInitial}${lastInitial}`;
   return initials.toUpperCase();
 }
-function dispatchGraph() {
-  const dispatchData = [
-    { month: "January", rate: 5 },
-    { month: "February", rate: 12 },
-    { month: "March", rate: 0 },
-    { month: "April", rate: 0 },
-    { month: "May", rate: 0 },
-    { month: "June", rate: 0 },
-    { month: "July", rate: 0 },
-    { month: "August", rate: 0 },
-    { month: "September", rate: 15 },
-    { month: "October", rate: 0 },
-    { month: "November", rate: 0 },
-    { month: "December", rate: 0 },
-  ];
+
+function getGraph() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "php/get_summary.php",
+      dataType: "json",
+      success: function (data) {
+        console.log(data);
+        const acc = data;
+        resolve(acc);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred3.");
+        }
+      },
+    });
+  });
+}
+function dispatchGraph(dData) {
+  // const dispatchData = [
+  //   { month: "January", rate: 5 },
+  //   { month: "February", rate: 12 },
+  //   { month: "March", rate: 0 },
+  //   { month: "April", rate: 0 },
+  //   { month: "May", rate: 0 },
+  //   { month: "June", rate: 0 },
+  //   { month: "July", rate: 0 },
+  //   { month: "August", rate: 0 },
+  //   { month: "September", rate: 15 },
+  //   { month: "October", rate: 0 },
+  //   { month: "November", rate: 0 },
+  //   { month: "December", rate: 0 },
+  // ];
 
   // Extracting months and rates from the data
-  const months = dispatchData.map((data) => data.month);
-  const rates = dispatchData.map((data) => data.rate);
+  const months = dData.map((data) => data.month);
+  const rates = dData.map((data) => data.rate);
 
   // Creating the line chart
   const ctx = document.getElementById("dispatchChart").getContext("2d");
