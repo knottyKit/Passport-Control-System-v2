@@ -196,6 +196,17 @@ $(document).on("change", "#startDate", function () {
   const sdate = $(this).val();
   $("#endDate").attr("min", sdate);
 });
+$(document).on("click", "#logoutBtn", function () {
+  logOut()
+    .then((res) => {
+      if (res.isSuccess) {
+        window.location.href = `${rootFolder}/PCSKHI/Login`;
+      }
+    })
+    .catch((error) => {
+      alert(`${error}`);
+    });
+});
 //#endregion
 
 //#region FUNCTIONS
@@ -216,7 +227,7 @@ function getGroups() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.7");
+          reject("An unspecified error occurred while fetching groups.");
         }
       },
     });
@@ -255,7 +266,7 @@ function getEmployees() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.6");
+          reject("An unspecified error occurred fetching employee list.");
         }
       },
     });
@@ -292,7 +303,7 @@ function countDays(strt, end) {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.5");
+          reject("An unspecified error occurred while checking add duration.");
         }
       },
     });
@@ -334,7 +345,9 @@ function getPassport() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.4");
+          reject(
+            "An unspecified error occurred while fetching passport details."
+          );
         }
       },
     });
@@ -394,7 +407,7 @@ function getVisa() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.3");
+          reject("An unspecified error occurred while fecthing visa details.");
         }
       },
     });
@@ -450,7 +463,9 @@ function getDispatchHistory() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.haha");
+          reject(
+            "An unspecified error occurred while fetching dispatch history."
+          );
         }
       },
     });
@@ -529,7 +544,7 @@ function getDispatchDays() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurreds.");
+          reject("An unspecified error occurred checking duration.");
         }
       },
     });
@@ -664,7 +679,7 @@ function insertDispatch() {
       } else if (xhr.status === 500) {
         alert("Internal Server Error: There was a server error.");
       } else {
-        alert("An unspecified error occurredxdxd.");
+        alert("An unspecified error occurred while adding dispatch data.");
       }
     },
   });
@@ -697,7 +712,7 @@ function getLocations() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.2");
+          reject("An unspecified error occurred fetching locations.");
         }
       },
     });
@@ -744,45 +759,26 @@ function deleteDispatch() {
       } else if (xhr.status === 500) {
         reject("Internal Server Error: There was a server error.");
       } else {
-        reject("An unspecified error occurreds.");
+        reject(
+          "An unspecified error occurred while deleting dispatch history."
+        );
       }
     },
   });
 }
-// function checkAccess() {
-//   return new Promise((resolve, reject) => {
-//     $.ajax({
-//       type: "GET",
-//       url: "php/check_permission.php",
-//       dataType: "json",
-//       success: function (data) {
-//         const acc = data;
-//         resolve(acc);
-//       },
-//       error: function (xhr, status, error) {
-//         if (xhr.status === 404) {
-//           reject("Not Found Error: The requested resource was not found.");
-//         } else if (xhr.status === 500) {
-//           reject("Internal Server Error: There was a server error.");
-//         } else {
-//           reject("An unspecified error occurred.1");
-//         }
-//       },
-//     });
-//   });
-// }
+
 function checkAccess() {
-  const response = {
-    isSuccess: true,
-    data: {
-      id: 6969,
-      group: "Systems Group",
-      empname: {
-        firstname: "Korin Kitto",
-        surname: "Medurano",
-      },
-    },
-  };
+  // const response = {
+  //   isSuccess: true,
+  //   data: {
+  //     id: 6969,
+  //     group: "Systems Group",
+  //     empname: {
+  //       firstname: "Korin Kitto",
+  //       surname: "Medurano",
+  //     },
+  //   },
+  // };
   // const response = {
   //   isSuccess: false,
   //   message: "Access Denied",
@@ -792,30 +788,30 @@ function checkAccess() {
   //   message: "Not logged in",
   // };
   return new Promise((resolve, reject) => {
-    //   $.ajax({
-    //     type: "GET",
-    //     url: "global/check_login.php",
-    //     dataType: "json",
-    //     success: function (data) {
-    //       const acc = data;
-    //       resolve(acc);
-    //     },
-    //     error: function (xhr, status, error) {
-    //       if (xhr.status === 404) {
-    //         reject("Not Found Error: The requested resource was not found.");
-    //       } else if (xhr.status === 500) {
-    //         reject("Internal Server Error: There was a server error.");
-    //       } else {
-    //         reject("An unspecified error occurred.");
-    //       }
-    //     },
-    //   });
-    resolve(response);
+    $.ajax({
+      type: "GET",
+      url: "../global/check_login.php",
+      dataType: "json",
+      success: function (data) {
+        const acc = data;
+        resolve(acc);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while checking login details.");
+        }
+      },
+    });
+    // resolve(response);
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = empDetails.firstname;
+  const sName = empDetails.surname;
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
@@ -872,7 +868,7 @@ function saveEditEntry() {
       } else if (xhr.status === 500) {
         reject("Internal Server Error: There was a server error.");
       } else {
-        reject("An unspecified error occurreds.");
+        reject("An unspecified error occurred while updating dispatch data.");
       }
     },
   });
@@ -942,7 +938,7 @@ function getYearly() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.3");
+          reject("An unspecified error occurred while fetching yearly data.");
         }
       },
     });
@@ -1055,6 +1051,29 @@ function showToast(type, str) {
   setTimeout(() => {
     toast.remove();
   }, 3000);
+}
+function logOut() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "../global/logout.php",
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while logging out.");
+        }
+      },
+    });
+  });
 }
 
 //#endregion

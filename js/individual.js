@@ -62,6 +62,13 @@ $(document).on("click", "#closeNav", function () {
   $(".navigation").removeClass("open");
   $("body").removeClass("overflow-hidden");
 });
+$(document).on("click", "#logoutBtn", function () {
+  logOut().then((res) => {
+    if (res.isSuccess) {
+      window.location.href = `${rootFolder}/PCSKHI/Login`;
+    }
+  });
+});
 //#endregion
 
 //#region FUNCTIONS
@@ -86,7 +93,7 @@ function getDispatchlist() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred1.");
+          reject("An unspecified error occurred while fetching dispatch list.");
         }
       },
     });
@@ -139,7 +146,9 @@ function getExpiringPassport() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred2.");
+          reject(
+            "An unspecified error occurred while fetching passport details."
+          );
         }
       },
     });
@@ -180,7 +189,7 @@ function getExpiringVisa() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.");
+          reject("An unspecified error occurred while fetching visa details.");
         }
       },
     });
@@ -256,7 +265,7 @@ function checkAccess() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred3.");
+          reject("An unspecified error occurred while checking login details.");
         }
       },
     });
@@ -297,7 +306,7 @@ function getGraph() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred3.");
+          reject("An unspecified error occurred while fetching graph data.");
         }
       },
     });
@@ -346,6 +355,29 @@ function dispatchGraph(dData) {
         },
       },
     },
+  });
+}
+function logOut() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "global/logout.php",
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while logging out.");
+        }
+      },
+    });
   });
 }
 //#endregion
