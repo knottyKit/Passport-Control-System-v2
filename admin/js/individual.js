@@ -59,10 +59,6 @@ $(document).on("click", "#closeNav", function () {
   $("body").removeClass("overflow-hidden");
 });
 
-$(document).on("click", ".seeMore", function () {
-  var empID = $(this).attr("id");
-  window.location.href = `../empDetails?id=${empID}`;
-});
 $(document).on("change", "#grpSel", function () {
   searchEmployee();
 });
@@ -76,7 +72,19 @@ $(document).on("click", ".sortEmpName", function () {
   toggleSortName();
 });
 $(document).on("click", "#addUser", function () {
-  addUser();
+  addUser()
+    .then((res) => {
+      if (res.isSuccess) {
+        $("#addUserModal .btn-close").click();
+        getEmployees().then((emps) => {
+          employees = emps;
+          searchEmployee(employees);
+        });
+      }
+    })
+    .catch((error) => {
+      alert(`${error}`);
+    });
 });
 $(document).on(
   "click",
@@ -118,6 +126,17 @@ $(document).on("click", "#removeUser", function () {
     .catch((error) => {
       alert(`${error}`);
     });
+});
+$(document).on("click", "#saveBtn", function () {
+  saveUser().then((res) => {
+    if (res.isSuccess) {
+      $(".btn-close").click();
+      getEmployees().then((emps) => {
+        employees = emps;
+        searchEmployee(employees);
+      });
+    }
+  });
 });
 //#endregion
 
@@ -338,7 +357,7 @@ function addUser() {
   var empFName = $("#empFName").val();
   var empLName = $("#empLName").val();
   var empGroup = $("#empGroup").val();
-  var empAccess = $("#empAccess").val();
+  var empAccess = $("#empAccessAdd").val();
   var ctr = 0;
 
   if (!empId) {
@@ -361,18 +380,45 @@ function addUser() {
     $("#empGroup").siblings("small").removeClass("hidden");
     ctr++;
   }
-  if (!empAccess) {
+  if (empAccess == undefined) {
     $("#empAccess").addClass("border-[var(--red-color)] bg-red-200");
     $("#empAccess").siblings("small").removeClass("hidden");
     ctr++;
   }
-
-  if (ctr > 0) {
-    return;
-  } else {
-    $("#addUserModal .btn-close").click();
-  }
+  return new Promise((resolve, reject) => {
+    if (ctr > 0) {
+      resolve({ isSuccess: false, error: "Incomplete Fields" });
+    } else {
+      resolve(empId, empFName, empLName, empGroup, empAccess);
+      // $.ajax({
+      //   type: "POST",
+      //   url: "php/add_khi.php",
+      //   data: {
+      //     empid: empId,
+      //     fname: empFName,
+      //     lname: empLName,
+      //     grpid: empGroup,
+      //     empacc: empAccess,
+      //   },
+      //   dataType: "dataType",
+      //   success: function (response) {
+      //     const res = response;
+      //     resolve(res);
+      //   },
+      //   error: function (xhr, status, error) {
+      //     if (xhr.status === 404) {
+      //       reject("Not Found Error: The requested resource was not found.");
+      //     } else if (xhr.status === 500) {
+      //       reject("Internal Server Error: There was a server error.");
+      //     } else {
+      //       reject("An unspecified error occurred while adding KHI member.");
+      //     }
+      //   },
+      // });
+    }
+  });
 }
+
 function resetAddModal() {
   var selectedG = $("#empGroup").children(":first").val();
   var selectedA = $("#empAccess").children(":first").val();
@@ -388,6 +434,11 @@ function resetAddModal() {
 }
 function fillEditModal(empnum) {
   $("#empIdEdit").val(empnum);
+  let empdeets = employees.find((emp) => emp.id == empnum);
+  $("#empFNameEdit").val(empdeets.fname);
+  $("#empLNameEdit").val(empdeets.sname);
+  $("#editGroup").val(empdeets.group.id);
+  $("#empAccessEdit").val(empdeets.type);
   $("#editUserModal").modal("show");
 }
 function fillRemoveModal(empnum, empname) {
@@ -419,6 +470,39 @@ function removeUser() {
         }
       },
     });
+  });
+}
+function saveUser() {
+  const empnumber = $("#empIdEdit").val();
+  const groupid = $("#editGroup").val();
+  const accessid = $("#empAccessEdit").val();
+  return new Promise((resolve, reject) => {
+    resolve({
+      isSuccess: true,
+    });
+    // $.ajax({
+    //   type: "PSOT",
+    //   url: "php/edit_khi.php",
+    //   data: {
+    //     empid: empnumber,
+    //     grpid: groupid,
+    //     accid: accessid,
+    //   },
+    //   dataType: "json",
+    //   success: function (response) {
+    //     const res = response;
+    //     resolve(res);
+    //   },
+    //   error: function (xhr, status, error) {
+    //     if (xhr.status === 404) {
+    //       reject("Not Found Error: The requested resource was not found.");
+    //     } else if (xhr.status === 500) {
+    //       reject("Internal Server Error: There was a server error.");
+    //     } else {
+    //       reject("An unspecified error occurred while editing KHI member");
+    //     }
+    //   },
+    // });
   });
 }
 //#endregion
