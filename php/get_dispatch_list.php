@@ -32,7 +32,7 @@ try {
 
     $dispatchQ = "SELECT CONCAT(el.firstname,' ',el.surname) AS ename, ll.location_name, dl.dispatch_from, dl.dispatch_to, pd.passport_expiry, vd.visa_expiry FROM 
     `dispatch_list` AS dl JOIN kdtphdb_new.employee_list AS el ON dl.emp_number = el.id JOIN `location_list` AS ll ON dl.location_id = ll.location_id LEFT JOIN `passport_details` 
-    AS pd ON pd.emp_number = el.id  LEFT JOIN `visa_details` AS vd ON vd.emp_number = el.id WHERE el.group_id IN () dl.dispatch_to >= :dateFilter AND el.emp_status = 1 ORDER BY 
+    AS pd ON pd.emp_number = el.id  LEFT JOIN `visa_details` AS vd ON vd.emp_number = el.id WHERE el.group_id IN ($groups) AND dl.dispatch_to >= :dateFilter AND el.emp_status = 1 ORDER BY 
     dl.dispatch_id DESC";
     $dispatchStmt = $connpcs->prepare($dispatchQ);
     $dispatchStmt->execute([":dateFilter" => $dateFilter]);
