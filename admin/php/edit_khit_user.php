@@ -28,11 +28,25 @@ if (!empty($_POST["empacc"])) {
 
 #region main query
 try {
-    $editUser = "UPDATE `khi_details` SET `group_id` = :grpID, `is_active` = :empacc WHERE `number` = :empID";
+    $editUser = "UPDATE `khi_details` SET `group_id` = :grpID WHERE `number` = :empID";
     $editUserStmt = $connpcs->prepare($editUser);
     if($editUserStmt->execute([":grpID" => "$grpID", ":empacc" => "$empacc", ":empID" => "$empID"])) {
-        $message["isSuccess"] = 1;
-        $message["message"] = "User successfully updated";
+        if($empacc == 0) {
+            $editPerm = "DELETE FROM `khi_user_permissions` WHERE `employee_id` = :empID";
+        } else {
+            $editPerm = "INSERT INTO `khi_user_permissions`(`permission_id`, `employee_id`) VALUES (1, :empID)";
+        }
+
+        $editPermStmt = $connpcs->prepare($editPerm);
+        if($editPermStmt->execute([":empID" => "$empID"])) {
+            $message["isSuccess"] = 1;
+            $message["message"] = "User successfully updated";
+        } else {
+            $message["isSuccess"] = 0;
+            $message["message"] = "Error updating user";
+        }
+
+        
     }
 
 } catch (Exception $e) {
