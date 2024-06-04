@@ -390,31 +390,31 @@ function addUser() {
       resolve({ isSuccess: false, error: "Incomplete Fields" });
     } else {
       resolve(empId, empFName, empLName, empGroup, empAccess);
-      // $.ajax({
-      //   type: "POST",
-      //   url: "php/add_khi.php",
-      //   data: {
-      //     empid: empId,
-      //     fname: empFName,
-      //     lname: empLName,
-      //     grpid: empGroup,
-      //     empacc: empAccess,
-      //   },
-      //   dataType: "dataType",
-      //   success: function (response) {
-      //     const res = response;
-      //     resolve(res);
-      //   },
-      //   error: function (xhr, status, error) {
-      //     if (xhr.status === 404) {
-      //       reject("Not Found Error: The requested resource was not found.");
-      //     } else if (xhr.status === 500) {
-      //       reject("Internal Server Error: There was a server error.");
-      //     } else {
-      //       reject("An unspecified error occurred while adding KHI member.");
-      //     }
-      //   },
-      // });
+      $.ajax({
+        type: "POST",
+        url: "php/add_khi_user.php",
+        data: {
+          empID: empId,
+          fname: empFName,
+          lname: empLName,
+          grpID: empGroup,
+          empacc: empAccess,
+        },
+        dataType: "dataType",
+        success: function (response) {
+          const res = response;
+          resolve(res);
+        },
+        error: function (xhr, status, error) {
+          if (xhr.status === 404) {
+            reject("Not Found Error: The requested resource was not found.");
+          } else if (xhr.status === 500) {
+            reject("Internal Server Error: There was a server error.");
+          } else {
+            reject("An unspecified error occurred while adding KHI member.");
+          }
+        },
+      });
     }
   });
 }

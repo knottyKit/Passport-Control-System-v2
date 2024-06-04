@@ -19,7 +19,7 @@ if (!empty($_POST['empID'])) {
     $msg["isSuccess"] = false;
     $msg['error'] = "Employee Number Missing";
 }
-$insertQ = "UPDATE `khi_details` SET `is_active`=0 WHERE `number`=:empNumber";
+$insertQ = "UPDATE `khi_details` SET `is_active` = 0 WHERE `number` = :empNumber";
 $insertStmt = $connpcs->prepare($insertQ);
 #endregion
 
