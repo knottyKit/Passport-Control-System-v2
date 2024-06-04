@@ -138,6 +138,17 @@ $(document).on("click", "#saveBtn", function () {
     }
   });
 });
+$(document).on("click", "#logoutBtn", function () {
+  logOut()
+    .then((res) => {
+      if (res.isSuccess) {
+        window.location.href = `${rootFolder}/PCSKHI/Login`;
+      }
+    })
+    .catch((error) => {
+      alert(`${error}`);
+    });
+});
 //#endregion
 
 //#region FUNCTIONS
@@ -294,18 +305,18 @@ function checkEmpty(tbodyID) {
   }
 }
 function checkAccess() {
-  const response = {
-    isSuccess: true,
-    data: {
-      id: 6969,
-      group: "Systems Group",
-      empname: {
-        firstname: "Korin Kitto",
-        surname: "Medurano",
-      },
-      type: 1,
-    },
-  };
+  // const response = {
+  //   isSuccess: true,
+  //   data: {
+  //     id: 6969,
+  //     group: "Systems Group",
+  //     empname: {
+  //       firstname: "Korin Kitto",
+  //       surname: "Medurano",
+  //     },
+  //     type: 1,
+  //   },
+  // };
   // const response = {
   //   isSuccess: false,
   //   message: "Access Denied",
@@ -315,30 +326,30 @@ function checkAccess() {
   //   message: "Not logged in",
   // };
   return new Promise((resolve, reject) => {
-    //   $.ajax({
-    //     type: "GET",
-    //     url: "global/check_login.php",
-    //     dataType: "json",
-    //     success: function (data) {
-    //       const acc = data;
-    //       resolve(acc);
-    //     },
-    //     error: function (xhr, status, error) {
-    //       if (xhr.status === 404) {
-    //         reject("Not Found Error: The requested resource was not found.");
-    //       } else if (xhr.status === 500) {
-    //         reject("Internal Server Error: There was a server error.");
-    //       } else {
-    //         reject("An unspecified error occurred.");
-    //       }
-    //     },
-    //   });
-    resolve(response);
+    $.ajax({
+      type: "GET",
+      url: "../global/check_login.php",
+      dataType: "json",
+      success: function (data) {
+        const acc = data;
+        resolve(acc);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred.");
+        }
+      },
+    });
+    // resolve(response);
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = empDetails.firstname;
+  const sName = empDetails.surname;
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
@@ -503,6 +514,29 @@ function saveUser() {
     //     }
     //   },
     // });
+  });
+}
+function logOut() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "../global/logout.php",
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while logging out.");
+        }
+      },
+    });
   });
 }
 //#endregion
