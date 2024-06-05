@@ -39,7 +39,7 @@ $(document).on("submit", "#loginForm", function (event) {
   Login()
     .then((res) => {
       if (res.isSuccess) {
-        window.location.href = `${rootFolder}/PCSKHI/`;
+        window.location.href = `${rootFolder}/PCSKHI`;
         // alert(`${res.message}`);
         $("#userid").val("");
       } else {
