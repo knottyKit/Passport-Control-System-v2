@@ -159,6 +159,10 @@ $(document).on("click", "#logoutBtn", function () {
       alert(`${error}`);
     });
 });
+
+$(document).on("click", ".rmvToast", function () {
+  $(this).closest(".toasty").remove();
+});
 //#endregion
 
 //#region FUNCTIONS
