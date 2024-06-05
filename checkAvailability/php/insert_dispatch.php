@@ -46,13 +46,24 @@ if (!empty($_POST['locID'])) {
     $msg["isSuccess"] = false;
     $msg['error'] = "Location Missing";
 }
-$insertQ = "INSERT INTO `dispatch_list`(`emp_number`,`dispatch_from`,`dispatch_to`,`location_id`) VALUES (:empNumber,:dateFrom,:dateTo,:locID)";
-$insertStmt = $connpcs->prepare($insertQ);
+
 #endregion
 
 #region Entries Query
 try {
+    $checkConflict = "SELECT COUNT(*) FROM `dispatch_list` WHERE `emp_number` = :empNumber AND (`dispatch_from` BETWEEN :dateFrom AND :dateTo OR `dispatch_to` 
+    BETWEEN :dateFrom AND :dateTo)";
+    $checkConflictStmt = $connpcs->prepare($checkConflict);
+    $checkConflictStmt->execute([":empNumber" => "$empNumber", ":dateFrom" => "$dateFrom", ":dateTo" => "$dateTo"]);
+    $checkCount = $checkConflictStmt->fetchColumn();
+    if($checkCount > 0) {
+        $msg["isSuccess"] = false;
+        $msg['error'] = "Dispatch conflict";
+    }
+
     if (empty($msg)) {
+        $insertQ = "INSERT INTO `dispatch_list`(`emp_number`,`dispatch_from`,`dispatch_to`,`location_id`) VALUES (:empNumber, :dateFrom, :dateTo, :locID)";
+        $insertStmt = $connpcs->prepare($insertQ);
         $insertStmt->execute([":empNumber" => $empNumber, ":dateFrom" => $dateFrom, ":dateTo" => $dateTo, ":locID" => $locID]);
         $msg["isSuccess"] = true;
         $msg["error"] = "Adding dispatch successfull";
