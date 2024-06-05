@@ -148,7 +148,25 @@ $(document).on("click", ".btn-delete", function () {
   $("#storeId").attr("del-id", trID);
 });
 $(document).on("click", "#btn-deleteEntry", function () {
-  deleteDispatch();
+  deleteDispatch().then((res) => {
+    if (res.isSuccess) {
+      showToast("success", res.error);
+      Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
+        .then(([dlst, dd, yrl]) => {
+          dHistory = dlst;
+          fillHistory(dHistory);
+          dispatch_days = dd;
+          fillYearly(yrl);
+          countTotal();
+          $("#deleteEntry .btn-close").click();
+        })
+        .catch((error) => {
+          showToast("error", error);
+        });
+    } else {
+      showToast("error", res.error);
+    }
+  });
 });
 $(document).on("click", "#updateEmp", function () {
   const empID = $("#empSel").find("option:selected").attr("emp-id");
@@ -160,7 +178,25 @@ $(document).on("click", "#updateEmp", function () {
 });
 
 $(document).on("click", "#btn-saveEntry", function () {
-  saveEditEntry();
+  saveEditEntry().then((res) => {
+    if (res.isSuccess) {
+      showToast("success", res.error);
+      Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
+        .then(([dlst, dd, yrl]) => {
+          dHistory = dlst;
+          fillHistory(dHistory);
+          dispatch_days = dd;
+          fillYearly(yrl);
+          countTotal();
+          $("#btn-saveEntry").closest(".modal").find(".btn-close").click();
+        })
+        .catch((error) => {
+          showToast("error", error);
+        });
+    } else {
+      showToast("error", res.error);
+    }
+  });
 });
 $(document).on("change", ".edit-date", function () {
   computeTotalDays();
@@ -651,7 +687,6 @@ function insertDispatch() {
       if (!isSuccess) {
         toggleLoadingAnimation(false);
         showToast("error", `${response.error}`);
-        alert(`${response.error}`); // Reject the promise
       } else {
         Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
           .then(([dlst, dd, yrl]) => {
@@ -733,37 +768,30 @@ function fillLocations(locs) {
 }
 function deleteDispatch() {
   const delID = $("#storeId").attr("del-id");
-  $.ajax({
-    type: "POST",
-    url: "php/delete_dispatch_history.php",
-    data: {
-      dispatchID: delID,
-    },
-    success: function (response) {
-      Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
-        .then(([dlst, dd, yrl]) => {
-          dHistory = dlst;
-          fillHistory(dHistory);
-          dispatch_days = dd;
-          fillYearly(yrl);
-          countTotal();
-          $("#deleteEntry .btn-close").click();
-        })
-        .catch((error) => {
-          alert(`${error}`);
-        });
-    },
-    error: function (xhr, status, error) {
-      if (xhr.status === 404) {
-        reject("Not Found Error: The requested resource was not found.");
-      } else if (xhr.status === 500) {
-        reject("Internal Server Error: There was a server error.");
-      } else {
-        reject(
-          "An unspecified error occurred while deleting dispatch history."
-        );
-      }
-    },
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "php/delete_dispatch_history.php",
+      dataType: "json",
+      data: {
+        dispatchID: delID,
+      },
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject(
+            "An unspecified error occurred while deleting dispatch history."
+          );
+        }
+      },
+    });
   });
 }
 
@@ -832,45 +860,32 @@ function saveEditEntry() {
   var datePh = $("#editentryDateP").val();
   const empID = $("#empSel").find("option:selected").attr("emp-id");
   const editID = $("#btn-saveEntry").attr("e-id");
-  $.ajax({
-    type: "POST",
-    url: "php/update_dispatch_history.php",
-    data: {
-      dispatchID: editID,
-      locID: loc,
-      dateFrom: dateJapan,
-      dateTo: datePh,
-      empID: empID,
-    },
-    dataType: "json",
-    success: function (response) {
-      const isSuccess = response.isSuccess;
-      if (!isSuccess) {
-        alert(`${response.conflict}`); // Reject the promise
-      } else {
-        Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
-          .then(([dlst, dd, yrl]) => {
-            dHistory = dlst;
-            fillHistory(dHistory);
-            dispatch_days = dd;
-            fillYearly(yrl);
-            countTotal();
-            $("#btn-saveEntry").closest(".modal").find(".btn-close").click();
-          })
-          .catch((error) => {
-            alert(`${error}`);
-          });
-      }
-    },
-    error: function (xhr, status, error) {
-      if (xhr.status === 404) {
-        reject("Not Found Error: The requested resource was not found.");
-      } else if (xhr.status === 500) {
-        reject("Internal Server Error: There was a server error.");
-      } else {
-        reject("An unspecified error occurred while updating dispatch data.");
-      }
-    },
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "php/update_dispatch_history.php",
+      data: {
+        dispatchID: editID,
+        locID: loc,
+        dateFrom: dateJapan,
+        dateTo: datePh,
+        empID: empID,
+      },
+      dataType: "json",
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while updating dispatch data.");
+        }
+      },
+    });
   });
 }
 function computeTotalDays() {
